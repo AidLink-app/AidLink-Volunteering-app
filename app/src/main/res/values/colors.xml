@@ -1,7 +1,6 @@
-<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
-
-    <color name="my_primary">#78E3F4</color>
+    <color name="blue">#2196F3</color> <!-- Primary blue -->
+    <color name="dark_blue">#0D47A1</color> <!-- Dark blue for accents -->
+    <color name="light_blue">#BBDEFB</color> <!-- Light blue for backgrounds -->
+    <color name="white">#FFFFFF</color> <!-- White for texts and backgrounds -->
 </resources>
