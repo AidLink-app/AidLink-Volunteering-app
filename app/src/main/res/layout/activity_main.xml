@@ -5,12 +5,15 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@color/light_blue"
     tools:context=".MainActivity">
 
     <!-- ImageView with color theme -->
 
     <!-- TextView with centralized alignment and color theme -->
+
+    <!-- CardView with color theme -->
+
     <TextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"
@@ -21,10 +24,10 @@
         android:textSize="32sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        tools:layout_editor_absoluteY="72dp" />
+        tools:layout_editor_absoluteY="109dp" />
 
-    <!-- CardView with color theme -->
     <androidx.cardview.widget.CardView
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -39,16 +42,16 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@color/white"
             android:orientation="vertical"
-            android:padding="24dp"
-            android:background="@color/white">
+            android:padding="24dp">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
                 android:text="Please login with your information"
-                android:textColor="@color/dark_blue"
-                android:layout_marginBottom="16dp" />
+                android:textColor="@color/dark_blue" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -62,9 +65,8 @@
                 android:id="@+id/email"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textEmailAddress"
                 android:layout_marginTop="4dp"
-                 />
+                android:inputType="textEmailAddress" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -79,9 +81,8 @@
                 android:id="@+id/password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textPassword"
                 android:layout_marginTop="4dp"
-                 />
+                android:inputType="textPassword" />
 
             <CheckBox
                 android:layout_width="wrap_content"

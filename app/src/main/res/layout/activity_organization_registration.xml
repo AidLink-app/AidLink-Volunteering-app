@@ -5,28 +5,38 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/light_blue"
     tools:context=".OrganizationRegistrationActivity">
 
     <LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="352dp"
+        android:layout_height="335dp"
+        android:background="@color/white"
         android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="16dp">
+        android:padding="24dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.491"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <!-- Profile Picture -->
         <Button
             android:id="@+id/btnChooseImage"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Choose Profile Picture" />
+            android:backgroundTint="@color/blue"
+            android:text="Choose Profile Picture"
+            android:textSize="20sp" />
 
         <!-- PDF Upload -->
         <Button
             android:id="@+id/btnUploadPDF"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Attach PDF" />
+            android:backgroundTint="@color/blue"
+            android:text="Attach PDF"
+            android:textSize="20sp" />
 
         <!-- Description -->
         <EditText
@@ -35,6 +45,7 @@
             android:layout_height="wrap_content"
             android:hint="Description"
             android:inputType="textMultiLine" />
+
         <EditText
             android:id="@+id/etEmail"
             android:layout_width="match_parent"
@@ -54,7 +65,9 @@
             android:id="@+id/btnSubmit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Submit" />
+            android:backgroundTint="@color/blue"
+            android:text="Submit"
+            android:textSize="20sp" />
     </LinearLayout>
 
 
