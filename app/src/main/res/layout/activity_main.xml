@@ -120,6 +120,7 @@
             android:layout_height="10dp" />
 
         <com.google.android.material.button.MaterialButton
+            android:id="@+id/login"
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:text="Login"
