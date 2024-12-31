@@ -15,6 +15,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.firestore.FirebaseFirestore
 
 class OrganizationRegistrationActivity : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth  // Declare FirebaseAuth instance
@@ -59,10 +60,13 @@ class OrganizationRegistrationActivity : AppCompatActivity() {
         btnSubmit.setOnClickListener {
             val email = findViewById<EditText>(R.id.etEmail).text.toString().trim()
             val password = findViewById<EditText>(R.id.etPassword).text.toString().trim()
-            if (email.isNotEmpty() && password.isNotEmpty()) {
+            val description = etDescription.text.toString().trim()
+
+            if (email.isNotEmpty() && password.isNotEmpty() && selectedPDFUri != null && description.isNotEmpty()) {
                 registerUser(email, password)
             } else {
-                Toast.makeText(this, "Email and password cannot be empty", Toast.LENGTH_SHORT).show()
+                // Notify the user that all fields are required including the PDF and description
+                Toast.makeText(this, "Email, password, a PDF, and a description are required", Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -96,16 +100,54 @@ class OrganizationRegistrationActivity : AppCompatActivity() {
         }
     }
 
+
     private fun registerUser(email: String, password: String) {
         auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 // Continue with uploading image and PDF
+                selectedImageUri?.let {
+                    uploadFileToFirebaseStorage(it, "images/${it.lastPathSegment}") { imageUrl ->
+                        selectedPDFUri?.let { pdfUri ->
+                            uploadFileToFirebaseStorage(pdfUri, "pdfs/${pdfUri.lastPathSegment}") { pdfUrl ->
+                                saveUserDetailsToFirestore(email, imageUrl, pdfUrl, etDescription.text.toString())
+                            }
+                        }
+                    }
+                }
                 Toast.makeText(this, "Registration successful", Toast.LENGTH_SHORT).show()
             } else {
                 // If sign in fails, display a message to the user.
                 Toast.makeText(this, "Authentication failed: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
             }
         }
+    }
+
+    private fun uploadFileToFirebaseStorage(fileUri: Uri, path: String, callback: (String) -> Unit) {
+        val storageReference = FirebaseStorage.getInstance().reference.child(path)
+        storageReference.putFile(fileUri).addOnSuccessListener {
+            storageReference.downloadUrl.addOnSuccessListener { uri ->
+                callback(uri.toString())  // Callback with the URL of the uploaded file
+            }
+        }.addOnFailureListener {
+            Toast.makeText(this, "Upload failed", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun saveUserDetailsToFirestore(email: String, imageUrl: String, pdfUrl: String, description: String) {
+        val user = hashMapOf(
+            "email" to email,
+            "imageURL" to imageUrl,
+            "pdfURL" to pdfUrl,
+            "description" to description
+        )
+        FirebaseFirestore.getInstance().collection("users").document(email)
+            .set(user)
+            .addOnSuccessListener {
+                Toast.makeText(this, "User details saved successfully", Toast.LENGTH_SHORT).show()
+            }
+            .addOnFailureListener { e ->
+                Toast.makeText(this, "Error saving user details: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
     }
 
     private fun checkAndRequestPermissions() {
