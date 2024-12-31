@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
     private void loginUser() {
-        String email = emailField.getText().toString().trim();
+        String email = emailField.getText().toString();
         String password = passwordField.getText().toString().trim();
 
         if (!email.isEmpty() && !password.isEmpty()) {
@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
                             startActivity(intent);
                             finish();  // End this activity so the user can't go back to it
                         } else {
-                            Toast.makeText(MainActivity.this, "Login has failed: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
+                            Toast.makeText(MainActivity.this, "Login failed: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
                         }
                     });
         } else {
