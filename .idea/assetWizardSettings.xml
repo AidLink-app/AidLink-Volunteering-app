@@ -67,6 +67,7 @@
                                           <PersistentState>
                                             <option name="values">
                                               <map>
+                                                <entry key="color" value="000000" />
                                                 <entry key="imagePath" value="C:\Users\lizac\AppData\Local\Temp\ic_android_black_24dp.xml" />
                                               </map>
                                             </option>
@@ -80,7 +81,8 @@
                                               <map>
                                                 <entry key="color" value="000000" />
                                                 <entry key="imagePath" value="C:\workspace\Software Engineering\APPic.png" />
-                                                <entry key="scalingPercent" value="163" />
+                                                <entry key="scalingPercent" value="114" />
+                                                <entry key="trimmed" value="true" />
                                               </map>
                                             </option>
                                           </PersistentState>
@@ -114,7 +116,6 @@
                                     <map>
                                       <entry key="backgroundAssetType" value="COLOR" />
                                       <entry key="backgroundColor" value="325c7c" />
-                                      <entry key="generateWebpIcons" value="false" />
                                       <entry key="legacyIconShape" value="CIRCLE" />
                                     </map>
                                   </option>
