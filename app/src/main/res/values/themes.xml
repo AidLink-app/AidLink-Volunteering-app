@@ -2,7 +2,7 @@
     <!-- Base application theme. -->
     <style name="Base.Theme.Welcom" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="colorPrimary">@color/blue</item> <!-- Using your defined blue color -->
     </style>
 
     <style name="Theme.Welcom" parent="Base.Theme.Welcom" />
