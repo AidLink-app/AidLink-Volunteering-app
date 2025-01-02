@@ -48,6 +48,8 @@ class OrganizationRegistrationActivity : AppCompatActivity() {
         // Add Return Button Programmatically
         val returnButton = Button(this)
         returnButton.text = "Return"
+        returnButton.setBackgroundColor(getResources().getColor(android.R.color.white));
+
         returnButton.layoutParams = LinearLayout.LayoutParams(
             ViewGroup.LayoutParams.MATCH_PARENT,
             ViewGroup.LayoutParams.WRAP_CONTENT
