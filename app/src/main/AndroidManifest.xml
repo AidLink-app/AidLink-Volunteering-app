@@ -20,6 +20,9 @@
             android:name=".OrganizationRegistrationActivity"
             android:exported="true" />
         <activity
+            android:name=".VolunteerRegistrationActivity"
+            android:exported="true" />
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
