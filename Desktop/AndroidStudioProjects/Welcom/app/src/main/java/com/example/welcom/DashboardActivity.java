@@ -27,6 +27,13 @@ public class DashboardActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
 
+        // Set Custom ActionBar
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayShowCustomEnabled(true);
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
+            getSupportActionBar().setCustomView(R.layout.action_bar_title);
+        }
+
         recyclerView = findViewById(R.id.recyclerView); // Ensure you have a RecyclerView in activity_dashboard.xml
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
