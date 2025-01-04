@@ -1,5 +1,0 @@
-com.example.welcom.test.app-core-1.6.1-0 /Users/roymamon/.gradle/caches/8.9/transforms/35f8f022b4a648e883ecc652bb0c4785/transformed/core-1.6.1/res
-com.example.welcom.test.app-androidTest-1 /Users/roymamon/Desktop/AndroidStudioProjects/Welcom/app/build/generated/res/resValues/androidTest/debug
-com.example.welcom.test.app-mergeDebugAndroidTestResources-2 /Users/roymamon/Desktop/AndroidStudioProjects/Welcom/app/build/intermediates/incremental/debugAndroidTest/mergeDebugAndroidTestResources/merged.dir
-com.example.welcom.test.app-mergeDebugAndroidTestResources-3 /Users/roymamon/Desktop/AndroidStudioProjects/Welcom/app/build/intermediates/incremental/debugAndroidTest/mergeDebugAndroidTestResources/stripped.dir
-com.example.welcom.test.app-debugAndroidTest-4 /Users/roymamon/Desktop/AndroidStudioProjects/Welcom/app/build/intermediates/merged_res/debugAndroidTest/mergeDebugAndroidTestResources

@@ -1,3 +1,0 @@
-com.example.welcom.test
-style WhiteBackgroundDialogTheme
-style WhiteBackgroundTheme
