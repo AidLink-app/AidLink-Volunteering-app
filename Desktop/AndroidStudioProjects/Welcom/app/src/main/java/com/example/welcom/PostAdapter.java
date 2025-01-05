@@ -47,7 +47,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         holder.btnViewDetails.setOnClickListener(v -> {
             if (holder.detailsLayout.getVisibility() == View.GONE) {
                 holder.detailsLayout.setVisibility(View.VISIBLE);
-                holder.btnViewDetails.setText("Hide Details");
+                holder.btnViewDetails.setText("Details");
                 holder.date.setText("Date: " + post.getDate());
                 holder.location.setText("Location: " + post.getLocation());
                 holder.organization.setText("Organization: " + post.getOrganization());
@@ -55,7 +55,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                 holder.imageUrl.setText("Image URL: " + post.getImageUrl());
             } else {
                 holder.detailsLayout.setVisibility(View.GONE);
-                holder.btnViewDetails.setText("View Details");
+                holder.btnViewDetails.setText("Details");
             }
         });
 
