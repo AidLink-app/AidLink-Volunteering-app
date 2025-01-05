@@ -49,8 +49,10 @@ public class AddPostActivity extends AppCompatActivity {
         String category = editTextCategory.getText().toString().trim();
         String imageUrl = editTextImageUrl.getText().toString().trim();
 
-        if (title.isEmpty() || description.isEmpty()) {
-            Toast.makeText(this, "Title and Description are required!", Toast.LENGTH_SHORT).show();
+        // Validate all fields
+        if (title.isEmpty() || description.isEmpty() || date.isEmpty() || location.isEmpty()
+                || organization.isEmpty() || category.isEmpty() || imageUrl.isEmpty()) {
+            Toast.makeText(this, "Please fill in all fields before submitting!", Toast.LENGTH_SHORT).show();
             return;
         }
 
