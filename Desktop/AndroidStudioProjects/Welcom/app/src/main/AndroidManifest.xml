@@ -29,6 +29,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".AddPostActivity" />
+        <activity android:name=".EditPostActivity" />
         <activity
             android:name=".RegistrationTypeActivity">
         </activity>
