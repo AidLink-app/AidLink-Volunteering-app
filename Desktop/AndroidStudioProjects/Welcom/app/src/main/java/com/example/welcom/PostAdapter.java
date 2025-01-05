@@ -43,10 +43,26 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         holder.title.setText(post.getTitle());
         holder.description.setText(post.getDescription());
 
-        // Edit Post Button
+        // 📝 **View Details Button**
+        holder.btnViewDetails.setOnClickListener(v -> {
+            if (holder.detailsLayout.getVisibility() == View.GONE) {
+                holder.detailsLayout.setVisibility(View.VISIBLE);
+                holder.btnViewDetails.setText("Hide Details");
+                holder.date.setText("Date: " + post.getDate());
+                holder.location.setText("Location: " + post.getLocation());
+                holder.organization.setText("Organization: " + post.getOrganization());
+                holder.category.setText("Category: " + post.getCategory());
+                holder.imageUrl.setText("Image URL: " + post.getImageUrl());
+            } else {
+                holder.detailsLayout.setVisibility(View.GONE);
+                holder.btnViewDetails.setText("View Details");
+            }
+        });
+
+        // 🛠️ **Edit Post Button**
         holder.btnEditPost.setOnClickListener(v -> {
             db.collection("posts")
-                    .whereEqualTo("title", post.getTitle()) // Match on unique attributes
+                    .whereEqualTo("title", post.getTitle())
                     .whereEqualTo("description", post.getDescription())
                     .get()
                     .addOnSuccessListener(queryDocumentSnapshots -> {
@@ -70,6 +86,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                         Toast.makeText(context, "Error retrieving post: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                     });
         });
+
         // 🗑️ **Delete Post Button with Confirmation Dialog**
         holder.btnDeletePost.setOnClickListener(v -> {
             new android.app.AlertDialog.Builder(context)
@@ -113,7 +130,9 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
     public static class PostViewHolder extends RecyclerView.ViewHolder {
         TextView title, description;
-        Button btnDeletePost, btnEditPost;
+        TextView date, location, organization, category, imageUrl;
+        Button btnDeletePost, btnEditPost, btnViewDetails;
+        View detailsLayout;
 
         public PostViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -121,6 +140,18 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             description = itemView.findViewById(R.id.postDescription);
             btnDeletePost = itemView.findViewById(R.id.btnDeletePost);
             btnEditPost = itemView.findViewById(R.id.btnEditPost);
+            btnViewDetails = itemView.findViewById(R.id.btnViewDetails);
+
+            // Details Section
+            detailsLayout = itemView.findViewById(R.id.detailsLayout);
+            date = itemView.findViewById(R.id.postDate);
+            location = itemView.findViewById(R.id.postLocation);
+            organization = itemView.findViewById(R.id.postOrganization);
+            category = itemView.findViewById(R.id.postCategory);
+            imageUrl = itemView.findViewById(R.id.postImageUrl);
+
+            // Initially hide details
+            detailsLayout.setVisibility(View.GONE);
         }
     }
 }

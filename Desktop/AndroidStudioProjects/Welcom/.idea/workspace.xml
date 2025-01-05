@@ -25,6 +25,16 @@
           <theme>@style/Theme.Welcom</theme>
         </config>
       </layout>
+      <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/activity_registration_type.xml">
+        <config>
+          <theme>@style/Theme.Welcom</theme>
+        </config>
+      </layout>
+      <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/activity_view_details.xml">
+        <config>
+          <theme>@style/Theme.Welcom</theme>
+        </config>
+      </layout>
       <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/item_post.xml">
         <config>
           <theme>@style/Theme.Welcom</theme>
@@ -54,8 +64,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="layoutResourceFile" />
         <option value="Class" />
+        <option value="layoutResourceFile" />
       </list>
     </option>
   </component>
