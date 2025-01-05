@@ -10,8 +10,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Title"
-        android:textSize="18sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:textSize="16sp" />
 
     <TextView
         android:id="@+id/postDescription"
@@ -19,5 +19,15 @@
         android:layout_height="wrap_content"
         android:text="Description"
         android:textSize="14sp" />
+
+    <!-- Delete Button -->
+    <Button
+        android:id="@+id/btnDeletePost"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Delete Post"
+        android:layout_marginTop="8dp"
+        android:textColor="@android:color/white"
+        android:backgroundTint="@android:color/holo_red_dark"/>
 
 </LinearLayout>
