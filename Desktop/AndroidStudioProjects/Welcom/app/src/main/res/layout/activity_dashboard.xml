@@ -18,6 +18,18 @@
         android:background="@color/blue"
         android:textColor="@android:color/white" />
 
+    <!-- Search Bar for Filtering Posts -->
+    <EditText
+        android:id="@+id/searchEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Search posts..."
+        android:padding="8dp"
+        android:layout_margin="8dp"
+        android:background="@android:drawable/edit_text"
+        android:inputType="text"
+        android:drawableStart="@android:drawable/ic_menu_search" />
+
     <!-- RecyclerView for Posts -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"

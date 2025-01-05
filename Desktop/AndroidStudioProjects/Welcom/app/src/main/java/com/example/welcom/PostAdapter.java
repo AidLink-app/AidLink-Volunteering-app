@@ -13,7 +13,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.List;
 
@@ -22,10 +21,17 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
     private List<Post> posts;
     private Context context;
     private FirebaseFirestore db;
+    private OnPostDeleteListener deleteListener;
 
-    public PostAdapter(List<Post> posts) {
+    // Interface for handling post deletions
+    public interface OnPostDeleteListener {
+        void onPostDeleted(Post post);
+    }
+
+    public PostAdapter(List<Post> posts, OnPostDeleteListener deleteListener) {
         this.posts = posts;
         this.db = FirebaseFirestore.getInstance();
+        this.deleteListener = deleteListener;
     }
 
     @NonNull
@@ -43,11 +49,11 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         holder.title.setText(post.getTitle());
         holder.description.setText(post.getDescription());
 
-        // 📝 **View Details Button**
+        // 📝 **View Details Button (Toggle Details Layout)**
         holder.btnViewDetails.setOnClickListener(v -> {
             if (holder.detailsLayout.getVisibility() == View.GONE) {
                 holder.detailsLayout.setVisibility(View.VISIBLE);
-                holder.btnViewDetails.setText("Details");
+                holder.btnViewDetails.setText("Hide Details");
                 holder.date.setText("Date: " + post.getDate());
                 holder.location.setText("Location: " + post.getLocation());
                 holder.organization.setText("Organization: " + post.getOrganization());
@@ -87,14 +93,14 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                     });
         });
 
-        // 🗑️ **Delete Post Button with Confirmation Dialog**
+        // 🗑️ **Delete Post Button**
         holder.btnDeletePost.setOnClickListener(v -> {
             new android.app.AlertDialog.Builder(context)
                     .setTitle("Delete Post")
                     .setMessage("Are you sure you want to delete this post?")
                     .setPositiveButton("Yes", (dialog, which) -> {
                         db.collection("posts")
-                                .whereEqualTo("title", post.getTitle()) // Match unique attributes
+                                .whereEqualTo("title", post.getTitle())
                                 .whereEqualTo("description", post.getDescription())
                                 .get()
                                 .addOnSuccessListener(queryDocumentSnapshots -> {
@@ -104,8 +110,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                                                 .delete()
                                                 .addOnSuccessListener(aVoid -> {
                                                     Toast.makeText(context, "Post Deleted", Toast.LENGTH_SHORT).show();
-                                                    posts.remove(position);
-                                                    notifyItemRemoved(position);
+                                                    deleteListener.onPostDeleted(post);
                                                 })
                                                 .addOnFailureListener(e -> {
                                                     Toast.makeText(context, "Failed to delete post: " + e.getMessage(), Toast.LENGTH_SHORT).show();
@@ -129,8 +134,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
     }
 
     public static class PostViewHolder extends RecyclerView.ViewHolder {
-        TextView title, description;
-        TextView date, location, organization, category, imageUrl;
+        TextView title, description, date, location, organization, category, imageUrl;
         Button btnDeletePost, btnEditPost, btnViewDetails;
         View detailsLayout;
 
