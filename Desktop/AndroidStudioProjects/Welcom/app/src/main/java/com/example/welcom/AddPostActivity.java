@@ -90,6 +90,8 @@ public class AddPostActivity extends AppCompatActivity {
 
         int selectedOrgIndex = organizationSpinner.getSelectedItemPosition();
         String organizationId = organizationIds.get(selectedOrgIndex); // Get selected organization ID
+        String organization = organizationSpinner.getSelectedItem().toString(); // Get selected organization Name
+
 
         // Validate all fields
         if (title.isEmpty() || description.isEmpty() || date.isEmpty() || location.isEmpty()
@@ -104,6 +106,8 @@ public class AddPostActivity extends AppCompatActivity {
         post.put("date", date);
         post.put("location", location);
         post.put("organizationId", organizationId); // Reference to selected organization
+        post.put("organization", organization); // Store the organization Name
+
         post.put("category", category);
         post.put("imageUrl", imageUrl);
 

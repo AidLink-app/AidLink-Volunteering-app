@@ -64,6 +64,7 @@ public class EditPostActivity extends AppCompatActivity {
         editTextCategory.setText(intent.getStringExtra("postCategory"));
         editTextImageUrl.setText(intent.getStringExtra("postImageUrl"));
 
+
         buttonUpdate.setText("Update Post"); // Change button text
 
         buttonUpdate.setOnClickListener(v -> updatePost());
@@ -86,6 +87,7 @@ public class EditPostActivity extends AppCompatActivity {
                     organizationAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, organizationList);
                     organizationAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     organizationSpinner.setAdapter(organizationAdapter);
+
                 })
                 .addOnFailureListener(e -> Toast.makeText(this, "Failed to load organizations", Toast.LENGTH_SHORT).show());
     }
