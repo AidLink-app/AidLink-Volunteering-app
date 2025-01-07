@@ -9,6 +9,17 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
+        <!-- Return Button -->
+        <Button
+            android:id="@+id/btnReturn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Return"
+            android:backgroundTint="@color/dark_blue"
+            android:textColor="@android:color/white"
+            android:layout_marginBottom="8dp"/>
+
+
         <!-- Title -->
         <EditText
             android:id="@+id/editTextTitle"

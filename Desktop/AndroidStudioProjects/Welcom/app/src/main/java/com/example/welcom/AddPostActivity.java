@@ -24,6 +24,12 @@ public class AddPostActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_post);
 
+        // Initialize Return Button
+        Button btnReturn = findViewById(R.id.btnReturn);
+        btnReturn.setOnClickListener(v -> {
+            finish(); // Go back to the previous activity
+        });
+
         // Initialize Firebase Firestore
         db = FirebaseFirestore.getInstance();
 
@@ -38,6 +44,7 @@ public class AddPostActivity extends AppCompatActivity {
         buttonSubmit = findViewById(R.id.buttonSubmit);
 
         buttonSubmit.setOnClickListener(v -> submitPost());
+
     }
 
     private void submitPost() {

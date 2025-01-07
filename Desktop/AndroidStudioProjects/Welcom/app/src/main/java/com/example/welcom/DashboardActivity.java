@@ -28,6 +28,7 @@ public class DashboardActivity extends AppCompatActivity {
 
     private FirebaseFirestore db;
     private Button btnAddPost; // "Add Post" Button reference
+
     private EditText searchEditText; // Search bar reference
 
     @Override

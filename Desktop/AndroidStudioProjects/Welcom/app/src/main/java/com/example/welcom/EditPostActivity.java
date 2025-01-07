@@ -25,6 +25,12 @@ public class EditPostActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_post); // Reusing the same layout
 
+        // Initialize Return Button
+        Button btnReturn = findViewById(R.id.btnReturn);
+        btnReturn.setOnClickListener(v -> {
+            finish(); // Go back to the previous activity
+        });
+
         // Initialize Firebase Firestore
         db = FirebaseFirestore.getInstance();
 

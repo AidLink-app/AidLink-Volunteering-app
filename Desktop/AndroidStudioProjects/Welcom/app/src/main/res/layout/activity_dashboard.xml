@@ -18,6 +18,8 @@
         android:background="@color/blue"
         android:textColor="@android:color/white" />
 
+
+
     <!-- Search Bar for Filtering Posts -->
     <EditText
         android:id="@+id/searchEditText"
