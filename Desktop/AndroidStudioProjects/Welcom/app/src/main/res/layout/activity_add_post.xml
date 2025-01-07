@@ -19,13 +19,12 @@
             android:textColor="@android:color/white"
             android:layout_marginBottom="8dp"/>
 
-
         <!-- Title -->
         <EditText
             android:id="@+id/editTextTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/title_hint"
+            android:hint="Title"
             android:inputType="text" />
 
         <!-- Description -->
@@ -33,7 +32,7 @@
             android:id="@+id/editTextDescription"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/description_hint"
+            android:hint="Description"
             android:inputType="textMultiLine"
             android:minLines="3" />
 
@@ -53,13 +52,20 @@
             android:hint="Location"
             android:inputType="text" />
 
-        <!-- Organization -->
-        <EditText
-            android:id="@+id/editTextOrganization"
+        <!-- Organization Dropdown (Spinner) -->
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Organization"
-            android:inputType="text" />
+            android:text="Select Organization"
+            android:textStyle="bold"
+            android:paddingTop="8dp"
+            android:paddingBottom="4dp"/>
+
+        <Spinner
+            android:id="@+id/organizationSpinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"/>
 
         <!-- Category -->
         <EditText
@@ -82,7 +88,7 @@
             android:id="@+id/buttonSubmit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/submit_button"
+            android:text="Submit Post"
             android:layout_marginTop="16dp"
             android:backgroundTint="@color/blue"
             android:textColor="@android:color/white"
