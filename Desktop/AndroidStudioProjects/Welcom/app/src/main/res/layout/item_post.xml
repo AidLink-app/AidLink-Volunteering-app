@@ -33,40 +33,77 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        android:orientation="vertical"
         android:gravity="center"
         android:layout_marginTop="8dp">
 
-        <Button
-            android:id="@+id/btnEditPost"
-            android:layout_width="0dp"
+        <!-- First Row of Buttons -->
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Edit"
-            android:backgroundTint="@color/blue"
-            android:textColor="@android:color/white"
-            android:layout_marginEnd="4dp"
-            android:layout_marginStart="4dp" />
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:weightSum="2"
+            android:layout_marginBottom="4dp">
 
-        <Button
-            android:id="@+id/btnDeletePost"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Delete"
-            android:backgroundTint="@android:color/holo_red_dark"
-            android:textColor="@android:color/white"
-            android:layout_marginEnd="4dp" />
+            <Button
+                android:id="@+id/btnViewDetails"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Details"
+                android:backgroundTint="@color/blue"
+                android:textColor="@android:color/white"
+                android:layout_margin="4dp"
+                android:singleLine="true"
+                android:minWidth="80dp" />
 
-        <Button
-            android:id="@+id/btnViewDetails"
-            android:layout_width="0dp"
+            <Button
+                android:id="@+id/btnRegister"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Register"
+                android:backgroundTint="@android:color/holo_green_dark"
+                android:textColor="@android:color/white"
+                android:layout_margin="4dp"
+                android:singleLine="true"
+                android:minWidth="80dp" />
+        </LinearLayout>
+
+        <!-- Second Row of Buttons -->
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Details"
-            android:backgroundTint="@color/blue"
-            android:textColor="@android:color/white"
-            android:layout_marginStart="4dp" />
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:weightSum="2"
+            android:layout_marginTop="4dp">
+
+            <Button
+                android:id="@+id/btnEditPost"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Edit"
+                android:backgroundTint="@color/blue"
+                android:textColor="@android:color/white"
+                android:layout_margin="4dp"
+                android:singleLine="true"
+                android:minWidth="80dp" />
+
+            <Button
+                android:id="@+id/btnDeletePost"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Delete"
+                android:backgroundTint="@android:color/holo_red_dark"
+                android:textColor="@android:color/white"
+                android:layout_margin="4dp"
+                android:singleLine="true"
+                android:minWidth="80dp" />
+        </LinearLayout>
     </LinearLayout>
 
     <!-- Hidden Layout for Details -->
@@ -117,6 +154,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Image URL: "
-            android:textSize="14sp"/>
+            android:textSize="14sp" />
     </LinearLayout>
 </LinearLayout>
