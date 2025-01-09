@@ -12,6 +12,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.List;
@@ -63,6 +65,36 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                 holder.detailsLayout.setVisibility(View.GONE);
                 holder.btnViewDetails.setText("Details");
             }
+        });
+
+        // 🛠️ Register Button
+        holder.btnRegister.setOnClickListener(v -> {
+            db.collection("posts")
+                    .whereEqualTo("title", post.getTitle())
+                    .whereEqualTo("description", post.getDescription())
+                    .get()
+                    .addOnSuccessListener(queryDocumentSnapshots -> {
+                        if (!queryDocumentSnapshots.isEmpty()) {
+                            String documentId = queryDocumentSnapshots.getDocuments().get(0).getId();
+
+                            String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+                            // Add the current user ID to the registeredUsers list
+                            db.collection("posts").document(documentId)
+                                    .update("registeredUsers", FieldValue.arrayUnion(currentUserId))
+                                    .addOnSuccessListener(aVoid -> {
+                                        Toast.makeText(context, "Successfully Registered!", Toast.LENGTH_SHORT).show();
+                                    })
+                                    .addOnFailureListener(e -> {
+                                        Toast.makeText(context, "Failed to register: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                    });
+                        } else {
+                            Toast.makeText(context, "Post not found!", Toast.LENGTH_SHORT).show();
+                        }
+                    })
+                    .addOnFailureListener(e -> {
+                        Toast.makeText(context, "Error fetching post: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    });
         });
 
         // 🛠️ **Edit Post Button**
@@ -135,7 +167,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
     public static class PostViewHolder extends RecyclerView.ViewHolder {
         TextView title, description, date, location, organization, category, imageUrl;
-        Button btnDeletePost, btnEditPost, btnViewDetails;
+        Button btnDeletePost, btnEditPost, btnViewDetails, btnRegister; // Added btnRegister
         View detailsLayout;
 
         public PostViewHolder(@NonNull View itemView) {
@@ -145,6 +177,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             btnDeletePost = itemView.findViewById(R.id.btnDeletePost);
             btnEditPost = itemView.findViewById(R.id.btnEditPost);
             btnViewDetails = itemView.findViewById(R.id.btnViewDetails);
+            btnRegister = itemView.findViewById(R.id.btnRegister); // Initialize btnRegister
 
             // Details Section
             detailsLayout = itemView.findViewById(R.id.detailsLayout);

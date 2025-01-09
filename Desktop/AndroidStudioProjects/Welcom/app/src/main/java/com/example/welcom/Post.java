@@ -1,5 +1,8 @@
 package com.example.welcom;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Post {
     private String title;
     private String description;
@@ -8,6 +11,8 @@ public class Post {
     private String organization;
     private String category;
     private String imageUrl;
+    private List<String> registeredUsers = new ArrayList<>();
+
 
     // Default Constructor (Required for Firestore)
     public Post() {
@@ -53,6 +58,9 @@ public class Post {
     public String getImageUrl() {
         return imageUrl;
     }
+    public List<String> getRegisteredUsers() {
+        return registeredUsers;
+    }
 
     // Setters
     public void setTitle(String title) {
@@ -81,5 +89,8 @@ public class Post {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+    public void setRegisteredUsers(List<String> registeredUsers) {
+        this.registeredUsers = registeredUsers;
     }
 }
