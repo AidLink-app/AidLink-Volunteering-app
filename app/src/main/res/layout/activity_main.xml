@@ -8,12 +8,7 @@
     android:background="@color/light_blue"
     tools:context=".MainActivity">
 
-    <!-- ImageView with color theme -->
-
-    <!-- TextView with centralized alignment and color theme -->
-
-    <!-- CardView with color theme -->
-
+    <!-- App Title -->
     <TextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"
@@ -23,6 +18,7 @@
         android:textColor="@color/blue"
         android:textSize="32sp"
         android:textStyle="bold"
+        android:contentDescription="App title: Aid-Link"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
@@ -30,6 +26,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.151" />
 
+    <!-- Main CardView -->
     <androidx.cardview.widget.CardView
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -37,8 +34,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_margin="16dp"
-        app:cardElevation="4dp"
-        app:cardCornerRadius="12dp"
+        app:cardElevation="6dp"
+        app:cardCornerRadius="16dp"
         app:cardBackgroundColor="@color/light_blue">
 
         <LinearLayout
@@ -48,13 +45,16 @@
             android:orientation="vertical"
             android:padding="24dp">
 
+            <!-- Login Instructions -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
                 android:text="Please login with your information"
-                android:textColor="@color/dark_blue" />
+                android:textColor="@color/dark_blue"
+                android:contentDescription="Instruction: Login with your email and password" />
 
+            <!-- Email Input -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -68,8 +68,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:inputType="textEmailAddress" />
+                android:hint="Enter your email"
+                android:inputType="textEmailAddress"
+                android:importantForAccessibility="yes" />
 
+            <!-- Password Input -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -84,8 +87,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:inputType="textPassword" />
+                android:hint="Enter your password"
+                android:inputType="textPassword"
+                android:importantForAccessibility="yes" />
 
+            <!-- Remember Me -->
             <CheckBox
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -94,15 +100,21 @@
                 android:textColor="@color/dark_blue"
                 android:textSize="16sp" />
 
+            <!-- Forgot Password -->
             <TextView
+                android:id="@+id/forgotPassword"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
                 android:layout_marginTop="4dp"
                 android:text="I forgot my password"
                 android:textColor="@color/blue"
-                android:textSize="16sp" />
+                android:textSize="16sp"
+                android:clickable="true"
+                android:focusable="true"
+                android:contentDescription="Forgot your password? Click here." />
 
+            <!-- Login Button -->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/login"
                 android:layout_width="match_parent"
@@ -114,6 +126,7 @@
                 android:textSize="20sp"
                 app:cornerRadius="32dp" />
 
+            <!-- Register Button -->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/register"
                 android:layout_width="match_parent"

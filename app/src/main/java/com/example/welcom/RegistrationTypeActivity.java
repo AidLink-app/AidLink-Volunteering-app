@@ -16,7 +16,8 @@ public class RegistrationTypeActivity extends AppCompatActivity {
         Button organizerButton = findViewById(R.id.organizerButton);
 
         volunteerButton.setOnClickListener(v -> {
-            // Intent to volunteer registration activity
+            Intent intent = new Intent(RegistrationTypeActivity.this, VolunteerRegistrationActivity.class);
+            startActivity(intent);
         });
 
         organizerButton.setOnClickListener(v -> {

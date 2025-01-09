@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
-
     <!-- Permissions -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -17,6 +16,9 @@
         android:theme="@style/Theme.Welcom"
         tools:targetApi="31">
         <activity
+            android:name=".VolunteerRegistrationActivity"
+            android:exported="true" />
+        <activity
             android:name=".OrganizationRegistrationActivity"
             android:exported="true" />
         <activity
@@ -28,9 +30,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".RegistrationTypeActivity">
-        </activity>
+        <activity android:name=".RegistrationTypeActivity"></activity>
         <activity android:name=".DashboardActivity" />
     </application>
 
