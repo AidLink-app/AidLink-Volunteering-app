@@ -16,6 +16,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder> {
@@ -77,17 +78,41 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                         if (!queryDocumentSnapshots.isEmpty()) {
                             String documentId = queryDocumentSnapshots.getDocuments().get(0).getId();
 
-                            String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                            String currentUserEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail(); // Get the current user's email
 
-                            // Add the current user ID to the registeredUsers list
-                            db.collection("posts").document(documentId)
-                                    .update("registeredUsers", FieldValue.arrayUnion(currentUserId))
-                                    .addOnSuccessListener(aVoid -> {
-                                        Toast.makeText(context, "Successfully Registered!", Toast.LENGTH_SHORT).show();
-                                    })
-                                    .addOnFailureListener(e -> {
-                                        Toast.makeText(context, "Failed to register: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                                    });
+                            if (currentUserEmail != null) {
+                                // Check if the user is already registered
+                                if (post.getRegisteredUsers() != null && post.getRegisteredUsers().contains(currentUserEmail)) {
+                                    // User is already registered, so Unregister
+                                    db.collection("posts").document(documentId)
+                                            .update("registeredUsers", FieldValue.arrayRemove(currentUserEmail))
+                                            .addOnSuccessListener(aVoid -> {
+                                                Toast.makeText(context, "Successfully Unregistered!", Toast.LENGTH_SHORT).show();
+                                                post.getRegisteredUsers().remove(currentUserEmail); // Update local list
+                                                holder.btnRegister.setText("Register"); // Change button text
+                                            })
+                                            .addOnFailureListener(e -> {
+                                                Toast.makeText(context, "Failed to unregister: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                            });
+                                } else {
+                                    // User is not registered, so Register
+                                    db.collection("posts").document(documentId)
+                                            .update("registeredUsers", FieldValue.arrayUnion(currentUserEmail))
+                                            .addOnSuccessListener(aVoid -> {
+                                                Toast.makeText(context, "Successfully Registered!", Toast.LENGTH_SHORT).show();
+                                                if (post.getRegisteredUsers() == null) {
+                                                    post.setRegisteredUsers(new ArrayList<>());
+                                                }
+                                                post.getRegisteredUsers().add(currentUserEmail); // Update local list
+                                                holder.btnRegister.setText("Unregister"); // Change button text
+                                            })
+                                            .addOnFailureListener(e -> {
+                                                Toast.makeText(context, "Failed to register: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                            });
+                                }
+                            } else {
+                                Toast.makeText(context, "Error: User email not found!", Toast.LENGTH_SHORT).show();
+                            }
                         } else {
                             Toast.makeText(context, "Post not found!", Toast.LENGTH_SHORT).show();
                         }
