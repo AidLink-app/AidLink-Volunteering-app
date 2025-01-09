@@ -72,6 +72,18 @@ public class DashboardActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
+        // Handle Sign Out Button
+        Button btnSignOut = findViewById(R.id.btnSignOut);
+        btnSignOut.setOnClickListener(v -> {
+            auth.signOut(); // Sign out the user
+            Toast.makeText(DashboardActivity.this, "Signed out successfully!", Toast.LENGTH_SHORT).show();
+
+            // Redirect to Login Screen
+            Intent intent = new Intent(DashboardActivity.this, MainActivity.class); // Assuming MainActivity is your login screen
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+            finish();
+        });
 
         // Fetch Posts and Organizations
         fetchOrganizations();

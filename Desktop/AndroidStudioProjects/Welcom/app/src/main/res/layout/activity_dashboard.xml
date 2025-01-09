@@ -18,8 +18,6 @@
         android:background="@color/blue"
         android:textColor="@android:color/white" />
 
-
-
     <!-- Search Bar for Filtering Posts -->
     <EditText
         android:id="@+id/searchEditText"
@@ -48,6 +46,17 @@
         android:text="Add Post"
         android:layout_margin="8dp"
         android:backgroundTint="@color/dark_blue"
+        android:textColor="@android:color/white"
+        android:textStyle="bold" />
+
+    <!-- Sign Out Button -->
+    <Button
+        android:id="@+id/btnSignOut"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Sign Out"
+        android:layout_margin="8dp"
+        android:backgroundTint="@android:color/holo_red_dark"
         android:textColor="@android:color/white"
         android:textStyle="bold" />
 </LinearLayout>
