@@ -47,12 +47,17 @@ public class MainActivity extends AppCompatActivity {
     private void loginUser() {
         String email = emailField.getText().toString().trim();
         String password = passwordField.getText().toString().trim();
+        // Create the User object
+        User user = new User(
+                email, "volunteer", "", "", "", "", ""
+        );
 
         if (!email.isEmpty() && !password.isEmpty()) {
             auth.signInWithEmailAndPassword(email, password)
                     .addOnCompleteListener(this, task -> {
                         if (task.isSuccessful()) {
                             Intent intent = new Intent(MainActivity.this, DashboardActivity.class);
+                            intent.putExtra("user", user);
                             startActivity(intent);
                             finish();  // End this activity so the user can't go back to it
                         } else {

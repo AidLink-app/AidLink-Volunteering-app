@@ -60,7 +60,6 @@ public class VolunteerRegistrationActivity extends AppCompatActivity {
                 .addOnCompleteListener(this, task -> {
                     if (task.isSuccessful()) {
                         // Registration success
-                        FirebaseUser user = mAuth.getCurrentUser();
 
                         // Store other user data (name, phone) in Firebase Realtime Database or Firestore
                         // For now, show a success message
