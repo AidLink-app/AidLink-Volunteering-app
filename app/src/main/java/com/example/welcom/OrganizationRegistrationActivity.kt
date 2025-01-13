@@ -138,7 +138,8 @@ class OrganizationRegistrationActivity : AppCompatActivity() {
             "email" to email,
             "imageURL" to imageUrl,
             "pdfURL" to pdfUrl,
-            "description" to description
+            "description" to description,
+            "role" to "organization"
         )
         FirebaseFirestore.getInstance().collection("users").document(email)
             .set(user)
