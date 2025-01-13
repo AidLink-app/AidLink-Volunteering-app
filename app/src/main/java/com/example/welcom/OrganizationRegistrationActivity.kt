@@ -100,7 +100,6 @@ class OrganizationRegistrationActivity : AppCompatActivity() {
         }
     }
 
-
     private fun registerUser(email: String, password: String) {
         auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener { task ->
             if (task.isSuccessful) {

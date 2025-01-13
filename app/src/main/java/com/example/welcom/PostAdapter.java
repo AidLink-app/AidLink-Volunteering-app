@@ -25,16 +25,18 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
     private Context context;
     private FirebaseFirestore db;
     private OnPostDeleteListener deleteListener;
+    private String userRole;
 
     // Interface for handling post deletions
     public interface OnPostDeleteListener {
         void onPostDeleted(Post post);
     }
 
-    public PostAdapter(List<Post> posts, OnPostDeleteListener deleteListener) {
+    public PostAdapter(List<Post> posts, OnPostDeleteListener deleteListener, String userRole) {
         this.posts = posts;
         this.db = FirebaseFirestore.getInstance();
         this.deleteListener = deleteListener;
+        this.userRole = userRole;
     }
 
     @NonNull
@@ -43,7 +45,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         context = parent.getContext();
         View view = LayoutInflater.from(context)
                 .inflate(R.layout.item_post, parent, false);
-        return new PostViewHolder(view);
+        return new PostViewHolder(view, this.userRole);
     }
 
     @Override
@@ -195,7 +197,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         Button btnDeletePost, btnEditPost, btnViewDetails, btnRegister; // Added btnRegister
         View detailsLayout;
 
-        public PostViewHolder(@NonNull View itemView) {
+        public PostViewHolder(@NonNull View itemView, String userRole) {
             super(itemView);
             title = itemView.findViewById(R.id.postTitle);
             description = itemView.findViewById(R.id.postDescription);
@@ -204,6 +206,14 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             btnViewDetails = itemView.findViewById(R.id.btnViewDetails);
             btnRegister = itemView.findViewById(R.id.btnRegister); // Initialize btnRegister
 
+            if (userRole.equals("volunteer")) { // Hide for volunteers
+                btnDeletePost.setVisibility(View.GONE);
+                btnEditPost.setVisibility(View.GONE);
+            }
+            else if (userRole.equals("organization")) {
+                btnDeletePost.setVisibility(View.VISIBLE);
+                btnEditPost.setVisibility(View.VISIBLE);
+            }
             // Details Section
             detailsLayout = itemView.findViewById(R.id.detailsLayout);
             date = itemView.findViewById(R.id.postDate);

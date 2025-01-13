@@ -16,7 +16,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import android.view.View;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -33,6 +35,9 @@ public class DashboardActivity extends AppCompatActivity {
 
     private FirebaseFirestore db;
     private FirebaseAuth auth;
+
+    private String userRole;
+    private FirebaseUser currentUser;
 
     private Button btnAddPost, btnSignOut; // Add Post and Sign-Out buttons
     private EditText searchEditText; // Search bar reference
@@ -54,12 +59,15 @@ public class DashboardActivity extends AppCompatActivity {
         // Initialize RecyclerView
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        Intent curr_intent = getIntent();
+        User user = (User) curr_intent.getSerializableExtra("user");
+        userRole = user.getRole();
         adapter = new PostAdapter(filteredList, post -> {
             // Remove the post from both postList and filteredList
             postList.remove(post);
             filteredList.remove(post);
             adapter.notifyDataSetChanged();
-        });
+        }, userRole);
         recyclerView.setAdapter(adapter);
 
         // Initialize Search Bar
@@ -84,7 +92,12 @@ public class DashboardActivity extends AppCompatActivity {
             startActivity(intent);
             finish();
         });
-
+        if (userRole.equals("volunteer")) {
+            btnAddPost.setVisibility(View.GONE);  // Hide add post button for volunteers
+        }
+        else if (userRole.equals("organization")) {
+            btnAddPost.setVisibility(View.VISIBLE);  // Hide add post button for volunteers
+        }
         // Fetch Posts and Organizations
         fetchOrganizations();
         fetchPostsFromFirestore();
@@ -94,6 +107,19 @@ public class DashboardActivity extends AppCompatActivity {
     }
 
 
+    private String getUserRole(String currentUserEmail) {
+        // Fetch user role from Firestore
+        db.collection("users").document(currentUserEmail)
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        userRole = documentSnapshot.getString("role");
+                    } else {
+                        Toast.makeText(DashboardActivity.this, "User not found!", Toast.LENGTH_SHORT).show();
+                    }
+                });
+        return userRole; // Return empty string if user role is not found"
+    }
 
     /**
      * Fetch organizations and store them in a map
