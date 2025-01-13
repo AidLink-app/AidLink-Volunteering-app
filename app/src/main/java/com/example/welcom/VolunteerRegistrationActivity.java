@@ -9,8 +9,12 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class VolunteerRegistrationActivity extends AppCompatActivity {
 
@@ -42,6 +46,22 @@ public class VolunteerRegistrationActivity extends AppCompatActivity {
         });
     }
 
+    private void saveUserDetailsToFirestore(User user) {
+        // Create a HashMap for user details
+
+        // Get Firestore instance and save the data
+        FirebaseFirestore.getInstance().collection("users").document(user.getEmail())
+                .set(user)
+                .addOnSuccessListener(unused -> {
+                    // Success callback
+                    Toast.makeText(this, "User details saved successfully", Toast.LENGTH_SHORT).show();
+                })
+                .addOnFailureListener(e -> {
+                    // Failure callback
+                    Toast.makeText(this, "Error saving user details: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
+    }
+
     private void handleRegistration() {
         // Retrieve user input
         String name = nameField.getText().toString().trim();
@@ -49,6 +69,7 @@ public class VolunteerRegistrationActivity extends AppCompatActivity {
         String password = passwordField.getText().toString().trim();
         String phone = phoneField.getText().toString().trim();
 
+        User user = new User(email, "volunteer", "", "", "", name, phone);
         // Validate input
         if (name.isEmpty() || email.isEmpty() || password.isEmpty() || phone.isEmpty()) {
             Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show();
@@ -64,7 +85,7 @@ public class VolunteerRegistrationActivity extends AppCompatActivity {
                         // Store other user data (name, phone) in Firebase Realtime Database or Firestore
                         // For now, show a success message
                         Toast.makeText(VolunteerRegistrationActivity.this, "Registration Successful", Toast.LENGTH_SHORT).show();
-
+                        saveUserDetailsToFirestore(user);
                         // Navigate to the next activity
                         Intent intent = new Intent(VolunteerRegistrationActivity.this, MainActivity.class);
                         startActivity(intent);

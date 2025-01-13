@@ -100,7 +100,6 @@ class OrganizationRegistrationActivity : AppCompatActivity() {
         }
     }
 
-
     private fun registerUser(email: String, password: String) {
         auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener { task ->
             if (task.isSuccessful) {
@@ -138,7 +137,8 @@ class OrganizationRegistrationActivity : AppCompatActivity() {
             "email" to email,
             "imageURL" to imageUrl,
             "pdfURL" to pdfUrl,
-            "description" to description
+            "description" to description,
+            "role" to "organization"
         )
         FirebaseFirestore.getInstance().collection("users").document(email)
             .set(user)
