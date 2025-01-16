@@ -68,7 +68,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             }
         });
 
-        // 🛠️ Register Button
+        // 🛠️ **Register Button**
         holder.btnRegister.setOnClickListener(v -> {
             db.collection("posts")
                     .whereEqualTo("title", post.getTitle())
@@ -78,24 +78,21 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                         if (!queryDocumentSnapshots.isEmpty()) {
                             String documentId = queryDocumentSnapshots.getDocuments().get(0).getId();
 
-                            String currentUserEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail(); // Get the current user's email
+                            String currentUserEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail();
 
                             if (currentUserEmail != null) {
-                                // Check if the user is already registered
                                 if (post.getRegisteredUsers() != null && post.getRegisteredUsers().contains(currentUserEmail)) {
-                                    // User is already registered, so Unregister
                                     db.collection("posts").document(documentId)
                                             .update("registeredUsers", FieldValue.arrayRemove(currentUserEmail))
                                             .addOnSuccessListener(aVoid -> {
                                                 Toast.makeText(context, "Successfully Unregistered!", Toast.LENGTH_SHORT).show();
-                                                post.getRegisteredUsers().remove(currentUserEmail); // Update local list
-                                                holder.btnRegister.setText("Register"); // Change button text
+                                                post.getRegisteredUsers().remove(currentUserEmail);
+                                                holder.btnRegister.setText("Register");
                                             })
                                             .addOnFailureListener(e -> {
                                                 Toast.makeText(context, "Failed to unregister: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                                             });
                                 } else {
-                                    // User is not registered, so Register
                                     db.collection("posts").document(documentId)
                                             .update("registeredUsers", FieldValue.arrayUnion(currentUserEmail))
                                             .addOnSuccessListener(aVoid -> {
@@ -103,8 +100,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                                                 if (post.getRegisteredUsers() == null) {
                                                     post.setRegisteredUsers(new ArrayList<>());
                                                 }
-                                                post.getRegisteredUsers().add(currentUserEmail); // Update local list
-                                                holder.btnRegister.setText("Unregister"); // Change button text
+                                                post.getRegisteredUsers().add(currentUserEmail);
+                                                holder.btnRegister.setText("Unregister");
                                             })
                                             .addOnFailureListener(e -> {
                                                 Toast.makeText(context, "Failed to register: " + e.getMessage(), Toast.LENGTH_SHORT).show();
@@ -132,7 +129,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                         if (!queryDocumentSnapshots.isEmpty()) {
                             String documentId = queryDocumentSnapshots.getDocuments().get(0).getId();
                             Intent intent = new Intent(context, EditPostActivity.class);
-                            intent.putExtra("postId", documentId); // Pass document ID
+                            intent.putExtra("postId", documentId);
                             intent.putExtra("postTitle", post.getTitle());
                             intent.putExtra("postDescription", post.getDescription());
                             intent.putExtra("postDate", post.getDate());
@@ -183,6 +180,13 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                     .setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss())
                     .show();
         });
+
+        // 🏢 **See Organization Button**
+        holder.btnSeeOrganization.setOnClickListener(v -> {
+            Intent intent = new Intent(context, OrganizationProfileActivity.class);
+            intent.putExtra("organizationId", post.getOrganizationId()); // Pass organizationId
+            context.startActivity(intent);
+        });
     }
 
     @Override
@@ -192,7 +196,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
     public static class PostViewHolder extends RecyclerView.ViewHolder {
         TextView title, description, date, location, organization, category, imageUrl;
-        Button btnDeletePost, btnEditPost, btnViewDetails, btnRegister; // Added btnRegister
+        Button btnDeletePost, btnEditPost, btnViewDetails, btnRegister, btnSeeOrganization;
         View detailsLayout;
 
         public PostViewHolder(@NonNull View itemView) {
@@ -202,7 +206,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             btnDeletePost = itemView.findViewById(R.id.btnDeletePost);
             btnEditPost = itemView.findViewById(R.id.btnEditPost);
             btnViewDetails = itemView.findViewById(R.id.btnViewDetails);
-            btnRegister = itemView.findViewById(R.id.btnRegister); // Initialize btnRegister
+            btnRegister = itemView.findViewById(R.id.btnRegister);
+            btnSeeOrganization = itemView.findViewById(R.id.btnSeeOrganization);
 
             // Details Section
             detailsLayout = itemView.findViewById(R.id.detailsLayout);

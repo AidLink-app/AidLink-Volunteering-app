@@ -38,6 +38,8 @@
         </activity>
         <activity android:name=".RegistrationTypeActivity" />
         <activity android:name=".DashboardActivity" />
+        <activity android:name=".OrganizationProfileActivity" />
+
     </application>
 
 </manifest>

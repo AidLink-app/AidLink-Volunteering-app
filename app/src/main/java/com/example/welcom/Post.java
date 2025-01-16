@@ -9,10 +9,10 @@ public class Post {
     private String date;
     private String location;
     private String organization;
+    private String organizationId; // Add this field
     private String category;
     private String imageUrl;
     private List<String> registeredUsers = new ArrayList<>();
-
 
     // Default Constructor (Required for Firestore)
     public Post() {
@@ -20,12 +20,13 @@ public class Post {
 
     // Constructor with all fields
     public Post(String title, String description, String date, String location,
-                String organization, String category, String imageUrl) {
+                String organization, String organizationId, String category, String imageUrl) {
         this.title = title;
         this.description = description;
         this.date = date;
         this.location = location;
         this.organization = organization;
+        this.organizationId = organizationId; // Initialize organizationId
         this.category = category;
         this.imageUrl = imageUrl;
     }
@@ -51,6 +52,10 @@ public class Post {
         return organization;
     }
 
+    public String getOrganizationId() { // Add getter for organizationId
+        return organizationId;
+    }
+
     public String getCategory() {
         return category;
     }
@@ -58,6 +63,7 @@ public class Post {
     public String getImageUrl() {
         return imageUrl;
     }
+
     public List<String> getRegisteredUsers() {
         return registeredUsers;
     }
@@ -83,6 +89,10 @@ public class Post {
         this.organization = organization;
     }
 
+    public void setOrganizationId(String organizationId) { // Add setter for organizationId
+        this.organizationId = organizationId;
+    }
+
     public void setCategory(String category) {
         this.category = category;
     }
@@ -90,6 +100,7 @@ public class Post {
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
     }
+
     public void setRegisteredUsers(List<String> registeredUsers) {
         this.registeredUsers = registeredUsers;
     }

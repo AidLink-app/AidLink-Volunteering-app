@@ -1,0 +1,64 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <!-- Return Button -->
+    <Button
+        android:id="@+id/btnReturn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Return"
+        android:backgroundTint="@color/blue"
+        android:textColor="@android:color/white"
+        android:layout_gravity="start"
+        android:padding="8dp" />
+
+    <!-- Organization Logo -->
+    <ImageView
+        android:id="@+id/orgLogo"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_gravity="center"
+        android:contentDescription="Organization Logo"
+        android:src="@drawable/ic_launcher_foreground"
+        android:padding="8dp" />
+
+    <!-- Organization Name -->
+    <TextView
+        android:id="@+id/orgName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Organization Name"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:paddingBottom="8dp" />
+
+    <!-- Organization Description -->
+    <TextView
+        android:id="@+id/orgDescription"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Description"
+        android:textSize="16sp"
+        android:paddingBottom="16dp" />
+
+    <!-- Organization Email -->
+    <TextView
+        android:id="@+id/orgEmail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Email"
+        android:textSize="16sp"
+        android:paddingBottom="8dp" />
+
+    <!-- List of Posts -->
+    <TextView
+        android:id="@+id/orgPosts"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Posts by this Organization"
+        android:textSize="16sp" />
+</LinearLayout>
