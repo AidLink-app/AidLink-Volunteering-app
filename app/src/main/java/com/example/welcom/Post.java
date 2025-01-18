@@ -11,6 +11,7 @@ public class Post {
     private String organization;
     private String category;
     private String imageUrl;
+    private String whatsapp_link;
     private List<String> registeredUsers = new ArrayList<>();
 
 
@@ -20,7 +21,7 @@ public class Post {
 
     // Constructor with all fields
     public Post(String title, String description, String date, String location,
-                String organization, String category, String imageUrl) {
+                String organization, String category, String imageUrl, String whatsapp_link) {
         this.title = title;
         this.description = description;
         this.date = date;
@@ -28,6 +29,7 @@ public class Post {
         this.organization = organization;
         this.category = category;
         this.imageUrl = imageUrl;
+        this.whatsapp_link = whatsapp_link;
     }
 
     // Getters
@@ -62,6 +64,8 @@ public class Post {
         return registeredUsers;
     }
 
+    public String getWhatsapp_link() { return whatsapp_link;}
+
     // Setters
     public void setTitle(String title) {
         this.title = title;
@@ -90,6 +94,8 @@ public class Post {
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
     }
+
+    public void setWhatsapp_link(String whatsapp_link) { this.whatsapp_link = whatsapp_link;}
     public void setRegisteredUsers(List<String> registeredUsers) {
         this.registeredUsers = registeredUsers;
     }

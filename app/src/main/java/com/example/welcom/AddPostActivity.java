@@ -20,7 +20,7 @@ import java.util.Map;
 
 public class AddPostActivity extends AppCompatActivity {
 
-    private EditText editTextTitle, editTextDescription, editTextDate, editTextLocation, editTextCategory, editTextImageUrl;
+    private EditText editTextTitle, editTextDescription, editTextDate, editTextLocation, editTextCategory, editTextImageUrl, editTextWhatsappLink;
     private Spinner organizationSpinner;
     private Button buttonSubmit, btnReturn;
     private FirebaseFirestore db;
@@ -48,7 +48,9 @@ public class AddPostActivity extends AppCompatActivity {
         editTextCategory = findViewById(R.id.editTextCategory);
         editTextImageUrl = findViewById(R.id.editTextImageUrl);
         buttonSubmit = findViewById(R.id.buttonSubmit);
-        organizationSpinner = findViewById(R.id.organizationSpinner); // Spinner for Organizations
+        organizationSpinner = findViewById(R.id.organizationSpinner);
+        editTextWhatsappLink = findViewById(R.id.editTextWhatsappLink);
+// Spinner for Organizations
 
         loadOrganizations(); // Populate the organization spinner
 
@@ -87,6 +89,8 @@ public class AddPostActivity extends AppCompatActivity {
         String location = editTextLocation.getText().toString().trim();
         String category = editTextCategory.getText().toString().trim();
         String imageUrl = editTextImageUrl.getText().toString().trim();
+        String whatsappLink = editTextWhatsappLink.getText().toString().trim();
+
 
         int selectedOrgIndex = organizationSpinner.getSelectedItemPosition();
         String organizationId = organizationIds.get(selectedOrgIndex); // Get selected organization ID
@@ -107,7 +111,7 @@ public class AddPostActivity extends AppCompatActivity {
         post.put("location", location);
         post.put("organizationId", organizationId); // Reference to selected organization
         post.put("organization", organization); // Store the organization Name
-
+        post.put("whatsapp_link", whatsappLink);
         post.put("category", category);
         post.put("imageUrl", imageUrl);
 
