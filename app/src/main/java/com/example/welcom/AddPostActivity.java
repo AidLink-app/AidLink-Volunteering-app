@@ -20,9 +20,15 @@ import java.util.Map;
 
 public class AddPostActivity extends AppCompatActivity {
 
-    private EditText editTextTitle, editTextDescription, editTextDate, editTextLocation, editTextCategory, editTextImageUrl;
-    private Spinner organizationSpinner;
-    private Button buttonSubmit, btnReturn;
+    EditText editTextTitle;
+    EditText editTextDescription;
+    EditText editTextDate;
+    EditText editTextLocation;
+    EditText editTextCategory;
+    EditText editTextImageUrl;
+    Spinner organizationSpinner;
+    Button buttonSubmit;
+    private Button btnReturn;
     private FirebaseFirestore db;
 
     private List<String> organizationIds = new ArrayList<>();
