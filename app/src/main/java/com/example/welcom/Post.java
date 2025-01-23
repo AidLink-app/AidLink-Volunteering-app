@@ -2,8 +2,9 @@ package com.example.welcom;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.io.Serializable;
 
-public class Post {
+public class Post implements Serializable{
     private String title;
     private String description;
     private String date;

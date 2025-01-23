@@ -76,7 +76,7 @@ public class DashboardActivity extends AppCompatActivity {
         // Handle Add Post Button
         btnAddPost = findViewById(R.id.btnAddPost);
         btnAddPost.setOnClickListener(v -> {
-            Intent intent = new Intent(DashboardActivity.this, AddPostActivity.class);
+            Intent intent = new Intent(DashboardActivity.this, PostActivity.class);
             startActivity(intent);
         });
 

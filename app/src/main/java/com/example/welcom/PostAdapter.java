@@ -133,7 +133,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                     .addOnSuccessListener(queryDocumentSnapshots -> {
                         if (!queryDocumentSnapshots.isEmpty()) {
                             String documentId = queryDocumentSnapshots.getDocuments().get(0).getId();
-                            Intent intent = new Intent(context, EditPostActivity.class);
+                            Intent intent = new Intent(context, PostActivity.class);
                             intent.putExtra("postId", documentId); // Pass document ID
                             intent.putExtra("postTitle", post.getTitle());
                             intent.putExtra("postDescription", post.getDescription());
@@ -142,6 +142,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                             intent.putExtra("postOrganization", post.getOrganization());
                             intent.putExtra("postCategory", post.getCategory());
                             intent.putExtra("postImageUrl", post.getImageUrl());
+                            intent.putExtra("post", post);
                             context.startActivity(intent);
                         } else {
                             Toast.makeText(context, "Failed to find post for editing", Toast.LENGTH_SHORT).show();
