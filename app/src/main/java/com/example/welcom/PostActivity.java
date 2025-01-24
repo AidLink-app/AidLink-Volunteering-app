@@ -99,7 +99,6 @@ public class PostActivity extends AppCompatActivity {
         if (isEditMode) {
             // Ensure postId is valid
             if (postId == null || postId.isEmpty()) {
-                Log.e("PostActivity", "Post ID is null or empty in edit mode");
                 Toast.makeText(this, "Invalid post. Please try again.", Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -109,12 +108,10 @@ public class PostActivity extends AppCompatActivity {
                     .document(postId)
                     .update(postMap)
                     .addOnSuccessListener(aVoid -> {
-                        Log.d("PostActivity", "Post updated successfully!");
                         Toast.makeText(this, "Post updated successfully!", Toast.LENGTH_SHORT).show();
                         navigateToDashboard();
                     })
                     .addOnFailureListener(e -> {
-                        Log.e("PostActivity", "Failed to update post: " + e.getMessage());
                         Toast.makeText(this, "Failed to update post: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                     });
         } else {
@@ -122,25 +119,20 @@ public class PostActivity extends AppCompatActivity {
             db.collection("posts")
                     .add(postMap)
                     .addOnSuccessListener(documentReference -> {
-                        Log.d("PostActivity", "Post added successfully!");
                         Toast.makeText(this, "Post added successfully!", Toast.LENGTH_SHORT).show();
                         navigateToDashboard();
                     })
                     .addOnFailureListener(e -> {
-                        Log.e("PostActivity", "Failed to add post: " + e.getMessage());
                         Toast.makeText(this, "Failed to add post: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                     });
         }
     }
 
     private void navigateToDashboard() {
-        Log.d("PostActivity", "Navigating to Dashboard");
         Intent intent = new Intent(PostActivity.this, DashboardActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.putExtra("USER", user);
         startActivity(intent);
         finish();
-        Log.d("PostActivity", "Finished PostActivity");
     }
 }
 

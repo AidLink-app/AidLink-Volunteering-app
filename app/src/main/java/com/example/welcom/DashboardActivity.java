@@ -59,8 +59,7 @@ public class DashboardActivity extends AppCompatActivity {
         // Initialize RecyclerView
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        Intent curr_intent = getIntent();
-        User user = (User) curr_intent.getSerializableExtra("user");
+        User user = UserSession.getUser();
         userRole = user.getRole();
         adapter = new PostAdapter(filteredList, post -> {
             // Remove the post from both postList and filteredList
@@ -85,7 +84,7 @@ public class DashboardActivity extends AppCompatActivity {
         btnSignOut.setOnClickListener(v -> {
             auth.signOut(); // Sign out the user
             Toast.makeText(DashboardActivity.this, "Signed out successfully!", Toast.LENGTH_SHORT).show();
-
+            UserSession.clearUser();
             // Redirect to Login Screen
             Intent intent = new Intent(DashboardActivity.this, MainActivity.class); // Assuming MainActivity is your login screen
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
