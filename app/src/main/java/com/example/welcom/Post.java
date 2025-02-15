@@ -4,14 +4,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Post {
+    private String postId;
     private String title;
     private String description;
     private String date;
     private String location;
-    private String organization;
+    private String organizationId;
     private String category;
     private String imageUrl;
     private String whatsapp_link;
+
+    private boolean activeStatus = true;
+
+    private String creatorEmail;
+
     private List<String> registeredUsers = new ArrayList<>();
 
 
@@ -26,13 +32,21 @@ public class Post {
         this.description = description;
         this.date = date;
         this.location = location;
-        this.organization = organization;
+        this.organizationId = organization;
         this.category = category;
         this.imageUrl = imageUrl;
         this.whatsapp_link = whatsapp_link;
+        this.activeStatus = true;
     }
 
     // Getters
+    public String getPostId() {
+        return postId;
+    }
+
+    public String getCreatorEmail() {
+        return creatorEmail;
+    }
     public String getTitle() {
         return title;
     }
@@ -50,7 +64,7 @@ public class Post {
     }
 
     public String getOrganization() {
-        return organization;
+        return organizationId;
     }
 
     public String getCategory() {
@@ -64,9 +78,29 @@ public class Post {
         return registeredUsers;
     }
 
+
+    public void setApprovedUsers(List<String> approvedUsers) {
+        this.registeredUsers = approvedUsers;
+    }
+
+    public boolean isActive(){
+        return activeStatus;
+    }
+
     public String getWhatsapp_link() { return whatsapp_link;}
 
     // Setters
+    public void setPostId(String postId) {
+        this.postId = postId;
+    }
+
+    public void setCreatorEmail(String creatorEmail) {
+        this.creatorEmail = creatorEmail;
+    }
+
+    public void setActiveStatus(boolean status){
+        this.activeStatus = status;
+    }
     public void setTitle(String title) {
         this.title = title;
     }
@@ -84,7 +118,7 @@ public class Post {
     }
 
     public void setOrganization(String organization) {
-        this.organization = organization;
+        this.organizationId = organization;
     }
 
     public void setCategory(String category) {

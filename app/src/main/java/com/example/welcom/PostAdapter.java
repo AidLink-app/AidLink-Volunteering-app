@@ -8,6 +8,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+import androidx.appcompat.app.AlertDialog;
+
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -17,7 +19,9 @@ import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder> {
 
@@ -54,6 +58,20 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         holder.title.setText(post.getTitle());
         holder.description.setText(post.getDescription());
 
+        // Get current user's email
+        String currentUserEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail();
+
+        holder.btnViewRegistrations.setOnClickListener(v -> {
+            showRegistrationsDialog(post.getRegisteredUsers(), post.getPostId());
+        });
+
+        if (!post.isActive()) {
+            holder.btnViewRegistrations.setVisibility(View.GONE);
+            holder.btnRegister.setVisibility(View.GONE);
+            holder.btnEditPost.setVisibility(View.GONE);
+            holder.btnDeletePost.setVisibility(View.GONE);
+        }
+
         // 📝 **View Details Button (Toggle Details Layout)**
         holder.btnViewDetails.setOnClickListener(v -> {
             if (holder.detailsLayout.getVisibility() == View.GONE) {
@@ -79,8 +97,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                     .addOnSuccessListener(queryDocumentSnapshots -> {
                         if (!queryDocumentSnapshots.isEmpty()) {
                             String documentId = queryDocumentSnapshots.getDocuments().get(0).getId();
-
-                            String currentUserEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail(); // Get the current user's email
 
                             if (currentUserEmail != null) {
                                 // Check if the user is already registered
@@ -108,16 +124,15 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                                                     post.setRegisteredUsers(new ArrayList<>());
                                                 }
                                                 post.getRegisteredUsers().add(currentUserEmail); // Add to local list
-                                                holder.btnRegister.setText("Unregister"); // Change button text
 
-                                                // Navigate to RegistrationConfirmationActivity
-                                                Intent intent = new Intent(context, RegistrationConfirmationActivity.class);
-
-                                                // Pass the WhatsApp link of the post to the next Activity
-                                                intent.putExtra("whatsappLink", post.getWhatsapp_link()); // Ensure Post has a getWhatsappLink() method
-
-                                                // Start the RegistrationConfirmationActivity
-                                                context.startActivity(intent);
+//                                                // Navigate to RegistrationConfirmationActivity
+//                                                Intent intent = new Intent(context, RegistrationConfirmationActivity.class);
+//
+//                                                // Pass the WhatsApp link of the post to the next Activity
+//                                                intent.putExtra("whatsappLink", post.getWhatsapp_link()); // Ensure Post has a getWhatsappLink() method
+//
+//                                                // Start the RegistrationConfirmationActivity
+//                                                context.startActivity(intent);
                                             })
                                             .addOnFailureListener(e -> {
                                                 Toast.makeText(context, "Failed to register: " + e.getMessage(), Toast.LENGTH_SHORT).show();
@@ -199,6 +214,66 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         });
     }
 
+    private void showRegistrationsDialog(List<String> registeredUsers, String postId) {
+        boolean[] checkedItems = new boolean[registeredUsers.size()];
+        ArrayList<String> selectedUsers = new ArrayList<>();
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle("Registered Volunteers");
+
+        // Convert list to a string array for display in the dialog
+        String[] usersArray = registeredUsers.toArray(new String[0]);
+        builder.setMultiChoiceItems(usersArray, checkedItems, (dialog, which, isChecked) -> {
+            // Update the selected items
+            if (isChecked) {
+                selectedUsers.add(registeredUsers.get(which));
+            } else {
+                selectedUsers.remove(registeredUsers.get(which));
+            }
+        });
+
+        // Add Approve button
+        builder.setPositiveButton("Approve", (dialog, which) -> {
+            // Call a method to handle approval
+            handleApprovals(selectedUsers, postId);
+        });
+
+        builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+    private void handleApprovals(List<String> selectedUsers, String postId) {
+        // Prepare the updates for Firestore
+        Map<String, Object> updates = new HashMap<>();
+        updates.put("approvedUsers", selectedUsers);
+        updates.put("activeStatus", false);  // Set the post to inactive
+
+        db.collection("posts").document(postId)
+                .update(updates)
+                .addOnSuccessListener(aVoid -> {
+                    Toast.makeText(context, "Volunteers Approved and Post Deactivated Successfully!", Toast.LENGTH_SHORT).show();
+                    // Find the post in the list and update its status
+                    for (Post post : posts) {
+                        if (post.getPostId().equals(postId)) {
+                            post.setActiveStatus(false);
+                            break;
+                        }
+                    }
+                    notifyDataSetChanged(); // Notify the adapter to re-bind all views
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(context, "Error approving volunteers: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
+    }
+
+    //TODO: approval email
+    private void sendApprovalEmails(List<String> userEmails) {
+        // You need to implement email sending, which might involve calling a Firebase Function or another backend service
+        // Example: Using Firebase Functions to trigger an email service like SendGrid or using a direct SMTP server setup
+    }
+
+
     @Override
     public int getItemCount() {
         return posts.size();
@@ -208,6 +283,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         TextView title, description, date, location, organization, category, imageUrl;
         Button btnDeletePost, btnEditPost, btnViewDetails, btnRegister; // Added btnRegister
         View detailsLayout;
+        Button btnViewRegistrations;
 
         public PostViewHolder(@NonNull View itemView, String userRole) {
             super(itemView);
@@ -217,6 +293,14 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             btnEditPost = itemView.findViewById(R.id.btnEditPost);
             btnViewDetails = itemView.findViewById(R.id.btnViewDetails);
             btnRegister = itemView.findViewById(R.id.btnRegister); // Initialize btnRegister
+
+            btnViewRegistrations = itemView.findViewById(R.id.btnViewRegistrations);
+
+            if ("organization".equals(userRole)) {
+                btnViewRegistrations.setVisibility(View.VISIBLE);
+            } else {
+                btnViewRegistrations.setVisibility(View.GONE);
+            }
 
             if (userRole.equals("volunteer")) { // Hide for volunteers
                 btnDeletePost.setVisibility(View.GONE);

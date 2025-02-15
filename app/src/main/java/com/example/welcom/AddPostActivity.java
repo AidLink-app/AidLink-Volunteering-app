@@ -105,6 +105,7 @@ public class AddPostActivity extends AppCompatActivity {
         }
 
         Map<String, Object> post = new HashMap<>();
+        post.put("activeStatus", true);
         post.put("title", title);
         post.put("description", description);
         post.put("date", date);

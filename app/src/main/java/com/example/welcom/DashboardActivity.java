@@ -150,6 +150,7 @@ public class DashboardActivity extends AppCompatActivity {
                     postList.clear();
                     for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
                         Post post = document.toObject(Post.class);
+                        post.setPostId(document.getId());
                         String organizationId = document.getString("organizationId");
 
                         if (organizationId != null && organizationMap.containsKey(organizationId)) {

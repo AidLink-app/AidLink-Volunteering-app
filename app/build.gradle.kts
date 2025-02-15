@@ -58,6 +58,7 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
+    implementation ("androidx.cardview:cardview:1.0.0")
     implementation ("com.google.android.material:material:1.9.0")
     // Espresso Core
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
