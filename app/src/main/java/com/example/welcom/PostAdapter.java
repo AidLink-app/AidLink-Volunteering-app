@@ -102,11 +102,22 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                                             .update("registeredUsers", FieldValue.arrayUnion(currentUserEmail))
                                             .addOnSuccessListener(aVoid -> {
                                                 Toast.makeText(context, "Successfully Registered!", Toast.LENGTH_SHORT).show();
+
+                                                // Update local list
                                                 if (post.getRegisteredUsers() == null) {
                                                     post.setRegisteredUsers(new ArrayList<>());
                                                 }
-                                                post.getRegisteredUsers().add(currentUserEmail); // Update local list
+                                                post.getRegisteredUsers().add(currentUserEmail); // Add to local list
                                                 holder.btnRegister.setText("Unregister"); // Change button text
+
+                                                // Navigate to RegistrationConfirmationActivity
+                                                Intent intent = new Intent(context, RegistrationConfirmationActivity.class);
+
+                                                // Pass the WhatsApp link of the post to the next Activity
+                                                intent.putExtra("whatsappLink", post.getWhatsapp_link()); // Ensure Post has a getWhatsappLink() method
+
+                                                // Start the RegistrationConfirmationActivity
+                                                context.startActivity(intent);
                                             })
                                             .addOnFailureListener(e -> {
                                                 Toast.makeText(context, "Failed to register: " + e.getMessage(), Toast.LENGTH_SHORT).show();
@@ -123,6 +134,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                         Toast.makeText(context, "Error fetching post: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                     });
         });
+
 
         // 🛠️ **Edit Post Button**
         holder.btnEditPost.setOnClickListener(v -> {

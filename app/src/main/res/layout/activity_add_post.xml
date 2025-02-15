@@ -83,6 +83,16 @@
             android:hint="Image URL"
             android:inputType="textUri" />
 
+        <!-- WhatsApp Link -->
+        <EditText
+            android:id="@+id/editTextWhatsappLink"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="WhatsApp Link"
+            android:inputType="textUri"
+            android:layout_marginTop="8dp" />
+
+
         <!-- Submit Button -->
         <Button
             android:id="@+id/buttonSubmit"
