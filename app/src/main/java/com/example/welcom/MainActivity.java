@@ -57,13 +57,13 @@ public class MainActivity extends AppCompatActivity {
                                 @Override
                                 public void onRoleFetched(String role) {
                                     // Handle the retrieved role
-
                                     Intent intent = new Intent(MainActivity.this, DashboardActivity.class);
                                     User user = new User(
                                             email, role, "", "", "", "", ""
                                     );
                                     intent.putExtra("user", user);
                                     startActivity(intent);
+                                    finish();
                                 }
                                 @Override
                                 public void onError(String error) {

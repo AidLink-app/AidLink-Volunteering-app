@@ -47,7 +47,6 @@ public class VolunteerRegistrationActivity extends AppCompatActivity {
     }
 
     private void saveUserDetailsToFirestore(User user) {
-        // Create a HashMap for user details
 
         // Get Firestore instance and save the data
         FirebaseFirestore.getInstance().collection("users").document(user.getEmail())
