@@ -99,11 +99,20 @@ public class AddPostActivity extends AppCompatActivity {
 
         // Validate all fields
         if (title.isEmpty() || description.isEmpty() || date.isEmpty() || location.isEmpty()
-                || organizationId.isEmpty() || category.isEmpty() || imageUrl.isEmpty()) {
+                || organizationId.isEmpty() || category.isEmpty() || imageUrl.isEmpty() || whatsappLink.isEmpty()) {
             Toast.makeText(this, "Please fill in all fields before submitting!", Toast.LENGTH_SHORT).show();
             return;
         }
-
+//        Post post = new Post();
+//        post.setActiveStatus(true);
+//        post.setTitle(title);
+//        post.setDescription(description);
+//        post.setDate(date);
+//        post.setLocation(location);
+//        post.setOrganization(organizationId);
+//        post.setWhatsapp_link(whatsappLink);
+//        post.setCategory(category);
+//        post.setImageUrl(imageUrl);
         Map<String, Object> post = new HashMap<>();
         post.put("activeStatus", true);
         post.put("title", title);

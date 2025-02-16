@@ -18,7 +18,7 @@ import java.util.Map;
 
 public class EditPostActivity extends AppCompatActivity {
 
-    private EditText editTextTitle, editTextDescription, editTextDate, editTextLocation, editTextCategory, editTextImageUrl;
+    private EditText editTextTitle, editTextDescription, editTextDate, editTextLocation, editTextCategory, editTextImageUrl, editWhatsappLink;
     private Spinner organizationSpinner;
     private Button buttonUpdate;
     private FirebaseFirestore db;
@@ -103,14 +103,25 @@ public class EditPostActivity extends AppCompatActivity {
         String category = editTextCategory.getText().toString().trim();
         String imageUrl = editTextImageUrl.getText().toString().trim();
         String organization = organizationSpinner.getSelectedItem().toString();
+        String whatsappLink = editWhatsappLink.getText().toString().trim();
 
         // Validate all fields
         if (title.isEmpty() || description.isEmpty() || date.isEmpty() || location.isEmpty()
-                || organization.isEmpty() || category.isEmpty() || imageUrl.isEmpty()) {
+                || organization.isEmpty() || category.isEmpty() || imageUrl.isEmpty() || whatsappLink.isEmpty() ) {
             Toast.makeText(this, "Please fill in all fields before updating!", Toast.LENGTH_SHORT).show();
             return;
         }
-
+//        Post updatedPost = new Post();
+//        updatedPost.setActiveStatus(true);
+//        updatedPost.setTitle(title);
+//        updatedPost.setDescription(description);
+//        updatedPost.setDate(date);
+//        updatedPost.setLocation(location);
+//        updatedPost.setOrganization(organizationId);
+//        updatedPost.setWhatsapp_link(whatsappLink);
+//        updatedPost.setCategory(category);
+//        updatedPost.setImageUrl(imageUrl);
+//
         Map<String, Object> updatedPost = new HashMap<>();
         updatedPost.put("title", title);
         updatedPost.put("description", description);
@@ -118,6 +129,7 @@ public class EditPostActivity extends AppCompatActivity {
         updatedPost.put("location", location);
         updatedPost.put("organization", organization);
         updatedPost.put("category", category);
+        updatedPost.put("whatsapp_link", whatsappLink);
         updatedPost.put("imageUrl", imageUrl);
 
         // Update Firestore document

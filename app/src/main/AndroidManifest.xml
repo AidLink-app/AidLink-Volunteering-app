@@ -28,6 +28,10 @@
             android:name=".OrganizationRegistrationActivity"
             android:exported="true" />
         <activity
+            android:name=".NotificationsActivity"
+            android:exported="true" />
+
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>

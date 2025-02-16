@@ -1,7 +1,9 @@
 package com.example.welcom;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Post {
     private String postId;
@@ -132,5 +134,19 @@ public class Post {
     public void setWhatsapp_link(String whatsapp_link) { this.whatsapp_link = whatsapp_link;}
     public void setRegisteredUsers(List<String> registeredUsers) {
         this.registeredUsers = registeredUsers;
+    }
+
+    // Helper method to convert Post object to Map
+    public Map<String, Object> toMap() {
+        Map<String, Object> result = new HashMap<>();
+        result.put("activeStatus", this.activeStatus);
+        result.put("title", this.title);
+        result.put("description", this.description);
+        result.put("date", this.date);
+        result.put("location", this.location);
+        result.put("whatsappLink", this.whatsapp_link);
+        result.put("category", this.category);
+        result.put("imageUrl", this.imageUrl);
+        return result;
     }
 }

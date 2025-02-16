@@ -2,6 +2,7 @@ package com.example.welcom;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +20,7 @@ import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -118,12 +120,16 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                                             .update("registeredUsers", FieldValue.arrayUnion(currentUserEmail))
                                             .addOnSuccessListener(aVoid -> {
                                                 Toast.makeText(context, "Successfully Registered!", Toast.LENGTH_SHORT).show();
-
+                                                holder.btnRegister.setText("Register");
                                                 // Update local list
                                                 if (post.getRegisteredUsers() == null) {
                                                     post.setRegisteredUsers(new ArrayList<>());
                                                 }
                                                 post.getRegisteredUsers().add(currentUserEmail); // Add to local list
+
+                                                String notificationTitle = "Registration Successful";
+                                                String notificationMessage = "You have successfully registered for " + post.getTitle();
+                                                createNotificationForUser(currentUserEmail, notificationTitle, notificationMessage);
 
 //                                                // Navigate to RegistrationConfirmationActivity
 //                                                Intent intent = new Intent(context, RegistrationConfirmationActivity.class);
@@ -322,4 +328,24 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             detailsLayout.setVisibility(View.GONE);
         }
     }
+
+    private void createNotificationForUser(String userId, String title, String message) {
+        Map<String, Object> notification = new HashMap<>();
+        notification.put("userID", userId);
+        notification.put("title", title);
+        notification.put("message", message);
+        notification.put("timestamp", new Date());
+        notification.put("read", false);
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("notifications")
+                .add(notification)
+                .addOnSuccessListener(documentReference -> {
+                    Log.d("Notification", "DocumentSnapshot added with ID: " + documentReference.getId());
+                })
+                .addOnFailureListener(e -> {
+                    Log.w("Notification", "Error adding document", e);
+                });
+    }
+
 }
