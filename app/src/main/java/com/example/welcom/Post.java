@@ -1,12 +1,12 @@
 package com.example.welcom;
-
+import com.google.firebase.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Post {
     private String title;
     private String description;
-    private String date;
+    private Timestamp date;
     private String location;
     private String organization;
     private String category;
@@ -20,7 +20,7 @@ public class Post {
     }
 
     // Constructor with all fields
-    public Post(String title, String description, String date, String location,
+    public Post(String title, String description, Timestamp date, String location,
                 String organization, String category, String imageUrl, String whatsapp_link) {
         this.title = title;
         this.description = description;
@@ -41,7 +41,7 @@ public class Post {
         return description;
     }
 
-    public String getDate() {
+    public Timestamp getDate() {
         return date;
     }
 
@@ -75,7 +75,7 @@ public class Post {
         this.description = description;
     }
 
-    public void setDate(String date) {
+    public void setDate(Timestamp date) {
         this.date = date;
     }
 

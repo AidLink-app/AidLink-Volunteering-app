@@ -16,8 +16,11 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder> {
 
@@ -57,7 +60,15 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             if (holder.detailsLayout.getVisibility() == View.GONE) {
                 holder.detailsLayout.setVisibility(View.VISIBLE);
                 holder.btnViewDetails.setText("Hide Details");
-                holder.date.setText("Date: " + post.getDate());
+                // Convert Timestamp to a date string in "dd-MM-yyyy"
+                if (post.getDate() != null) {
+                    Date dateObj = post.getDate().toDate();
+                    SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
+                    String dateString = sdf.format(dateObj);
+                    holder.date.setText("Date: " + dateString);
+                } else {
+                    holder.date.setText("Date: N/A");
+                }
                 holder.location.setText("Location: " + post.getLocation());
                 holder.organization.setText("Organization: " + post.getOrganization());
                 holder.category.setText("Category: " + post.getCategory());

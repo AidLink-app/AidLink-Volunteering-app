@@ -7,6 +7,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
+import android.app.DatePickerDialog;
+import android.widget.DatePicker;
+import java.util.Calendar;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -17,6 +20,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import com.google.firebase.Timestamp;
+import java.text.SimpleDateFormat;
+import java.text.ParseException;
+import java.util.Date;
+import java.util.Locale;
 
 public class AddPostActivity extends AppCompatActivity {
 
@@ -50,7 +58,24 @@ public class AddPostActivity extends AppCompatActivity {
         buttonSubmit = findViewById(R.id.buttonSubmit);
         organizationSpinner = findViewById(R.id.organizationSpinner);
         editTextWhatsappLink = findViewById(R.id.editTextWhatsappLink);
-// Spinner for Organizations
+
+        // Show a DatePickerDialog when user clicks on editTextDate
+        editTextDate.setOnClickListener(v -> {
+            Calendar calendar = Calendar.getInstance();
+            DatePickerDialog dialog = new DatePickerDialog(
+                    AddPostActivity.this,
+                    (view, year, month, dayOfMonth) -> {
+                        // month is 0-based
+                        int realMonth = month + 1;
+                        String selectedDate = dayOfMonth + "/" + realMonth + "/" + year;
+                        editTextDate.setText(selectedDate);
+                    },
+                    calendar.get(Calendar.YEAR),
+                    calendar.get(Calendar.MONTH),
+                    calendar.get(Calendar.DAY_OF_MONTH)
+            );
+            dialog.show();
+        });
 
         loadOrganizations(); // Populate the organization spinner
 
@@ -85,7 +110,7 @@ public class AddPostActivity extends AppCompatActivity {
     private void submitPost() {
         String title = editTextTitle.getText().toString().trim();
         String description = editTextDescription.getText().toString().trim();
-        String date = editTextDate.getText().toString().trim();
+        String dateStr = editTextDate.getText().toString().trim();
         String location = editTextLocation.getText().toString().trim();
         String category = editTextCategory.getText().toString().trim();
         String imageUrl = editTextImageUrl.getText().toString().trim();
@@ -98,16 +123,32 @@ public class AddPostActivity extends AppCompatActivity {
 
 
         // Validate all fields
-        if (title.isEmpty() || description.isEmpty() || date.isEmpty() || location.isEmpty()
+        if (title.isEmpty() || description.isEmpty() || dateStr.isEmpty() || location.isEmpty()
                 || organizationId.isEmpty() || category.isEmpty() || imageUrl.isEmpty()) {
             Toast.makeText(this, "Please fill in all fields before submitting!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        Timestamp dateTimestamp = null;
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+            Date dateObj = sdf.parse(dateStr);
+            if (dateObj != null) {
+                dateTimestamp = new Timestamp(dateObj);
+            } else {
+                Toast.makeText(this, "Invalid date format!", Toast.LENGTH_SHORT).show();
+                return;
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+            Toast.makeText(this, "Invalid date format, please use yyyy-MM-dd", Toast.LENGTH_SHORT).show();
             return;
         }
 
         Map<String, Object> post = new HashMap<>();
         post.put("title", title);
         post.put("description", description);
-        post.put("date", date);
+        post.put("date", dateTimestamp);
         post.put("location", location);
         post.put("organizationId", organizationId); // Reference to selected organization
         post.put("organization", organization); // Store the organization Name

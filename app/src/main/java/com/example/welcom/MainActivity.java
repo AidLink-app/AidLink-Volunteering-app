@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.Objects;
 import com.google.firebase.auth.FirebaseAuth;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -43,6 +44,13 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(this, RegistrationTypeActivity.class);
             startActivity(intent);
         });
+
+        TextView forgotPasswordText = findViewById(R.id.forgotPassword);
+        forgotPasswordText.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, ForgotPasswordActivity.class);
+            startActivity(intent);
+        });
+
     }
     private void loginUser() {
         String email = emailField.getText().toString().trim();
