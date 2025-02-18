@@ -11,12 +11,17 @@ import android.widget.Toast;
 import java.util.Date;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.messaging.FirebaseMessaging;
+
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,7 +29,7 @@ import java.util.List;
 import java.util.Map;
 
 public class DashboardActivity extends AppCompatActivity {
-
+    private DrawerLayout drawerLayout;
     private RecyclerView recyclerView;
     private PostAdapter adapter;
     private List<Post> postList = new ArrayList<>();
@@ -34,13 +39,44 @@ public class DashboardActivity extends AppCompatActivity {
     private FirebaseFirestore db;
     private FirebaseAuth auth;
 
+    private String userRole;
+    private FirebaseUser currentUser;
+
     private Button btnAddPost, btnSignOut; // Add Post and Sign-Out buttons
     private EditText searchEditText; // Search bar reference
+
+    private BottomNavigationView bottomNavigationView;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
+
+        bottomNavigationView = findViewById(R.id.bottom_navigation);
+
+        bottomNavigationView.setSelectedItemId(R.id.nav_home);
+
+        bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
+            if(item.getItemId() == R.id.nav_home) {
+                return true;
+            }
+            if(item.getItemId() == R.id.nav_settings) {
+                return true;
+            }
+            if (item.getItemId() == R.id.nav_notifications) {
+                Intent intent = new Intent(this, NotificationsActivity.class);
+                startActivity(intent);
+            }
+            if(item.getItemId() ==R.id.nav_profile) {
+                return true;
+            }
+            if(item.getItemId() == R.id.nav_addpost && userRole.equals("organization")) {
+                Intent intent = new Intent(DashboardActivity.this, AddPostActivity.class);
+                startActivity(intent);
+            }
+            return false;
+        });
+
 
         // Hide the ActionBar
         if (getSupportActionBar() != null) {
@@ -54,36 +90,39 @@ public class DashboardActivity extends AppCompatActivity {
         // Initialize RecyclerView
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        Intent curr_intent = getIntent();
+        User user = (User) curr_intent.getSerializableExtra("user");
+        userRole = user.getRole();
         adapter = new PostAdapter(filteredList, post -> {
             // Remove the post from both postList and filteredList
             postList.remove(post);
             filteredList.remove(post);
             adapter.notifyDataSetChanged();
-        });
+        }, userRole);
         recyclerView.setAdapter(adapter);
 
         // Initialize Search Bar
         searchEditText = findViewById(R.id.searchEditText);
 
         // Handle Add Post Button
-        btnAddPost = findViewById(R.id.btnAddPost);
-        btnAddPost.setOnClickListener(v -> {
-            Intent intent = new Intent(DashboardActivity.this, AddPostActivity.class);
-            startActivity(intent);
-        });
+//        btnAddPost = findViewById(R.id.btnAddPost);
+//        btnAddPost.setOnClickListener(v -> {
+//            Intent intent = new Intent(DashboardActivity.this, AddPostActivity.class);
+//            startActivity(intent);
+//        });
 
         // Handle Sign Out Button
-        Button btnSignOut = findViewById(R.id.btnSignOut);
-        btnSignOut.setOnClickListener(v -> {
-            auth.signOut(); // Sign out the user
-            Toast.makeText(DashboardActivity.this, "Signed out successfully!", Toast.LENGTH_SHORT).show();
-
-            // Redirect to Login Screen
-            Intent intent = new Intent(DashboardActivity.this, MainActivity.class); // Assuming MainActivity is your login screen
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
-            finish();
-        });
+//        Button btnSignOut = findViewById(R.id.btnSignOut);
+//        btnSignOut.setOnClickListener(v -> {
+//            auth.signOut(); // Sign out the user
+//            Toast.makeText(DashboardActivity.this, "Signed out successfully!", Toast.LENGTH_SHORT).show();
+//
+//            // Redirect to Login Screen
+//            Intent intent = new Intent(DashboardActivity.this, MainActivity.class); // Assuming MainActivity is your login screen
+//            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+//            startActivity(intent);
+//            finish();
+//        });
 
         // Fetch Posts and Organizations
         fetchOrganizations();
@@ -94,6 +133,20 @@ public class DashboardActivity extends AppCompatActivity {
     }
 
 
+
+    private String getUserRole(String currentUserEmail) {
+        // Fetch user role from Firestore
+        db.collection("users").document(currentUserEmail)
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        userRole = documentSnapshot.getString("role");
+                    } else {
+                        Toast.makeText(DashboardActivity.this, "User not found!", Toast.LENGTH_SHORT).show();
+                    }
+                });
+        return userRole; // Return empty string if user role is not found"
+    }
 
     /**
      * Fetch organizations and store them in a map
@@ -125,6 +178,7 @@ public class DashboardActivity extends AppCompatActivity {
 
                     for (QueryDocumentSnapshot document : querySnapshot) {
                         Object dateField = document.get("date");
+
 
                         // Skip posts with missing or incorrect date formats
                         if (dateField == null) {
