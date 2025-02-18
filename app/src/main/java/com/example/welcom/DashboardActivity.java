@@ -8,7 +8,7 @@ import android.text.TextWatcher;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-
+import java.util.Date;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -120,32 +120,63 @@ public class DashboardActivity extends AppCompatActivity {
     private void fetchPostsFromFirestore() {
         db.collection("posts")
                 .get()
-                .addOnSuccessListener(queryDocumentSnapshots -> {
+                .addOnSuccessListener(querySnapshot -> {
                     postList.clear();
-                    for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
-                        Post post = document.toObject(Post.class);
-                        String organizationId = document.getString("organizationId");
 
+                    for (QueryDocumentSnapshot document : querySnapshot) {
+                        Object dateField = document.get("date");
+
+                        // Skip posts with missing or incorrect date formats
+                        if (dateField == null) {
+                            Log.e("Firestore", "Skipping post: date is null in document " + document.getId());
+                            continue;
+                        }
+
+                        if (dateField instanceof String) {
+                            Log.e("Firestore", "Skipping post: date is String instead of Timestamp in document " + document.getId());
+                            continue;
+                        }
+
+                        if (!(dateField instanceof com.google.firebase.Timestamp)) {
+                            Log.e("Firestore", "Skipping post: date is not a valid Timestamp in document " + document.getId());
+                            continue;
+                        }
+
+                        com.google.firebase.Timestamp ts = (com.google.firebase.Timestamp) dateField;
+
+                        // Ignore posts with past events
+                        if (ts.toDate().before(new Date())) {
+                            Log.e("Firestore", "Skipping post: date is in the past for document " + document.getId());
+                            continue;
+                        }
+
+                        // Parse the post normally
+                        Post post = document.toObject(Post.class);
+                        post.setDate(ts); // Set correct Timestamp
+
+                        // Match organization ID to name
+                        String organizationId = document.getString("organizationId");
                         if (organizationId != null && organizationMap.containsKey(organizationId)) {
-                            post.setOrganization(organizationMap.get(organizationId)); // Set organization name
+                            post.setOrganization(organizationMap.get(organizationId));
                         } else {
                             post.setOrganization("Unknown Organization");
                         }
 
+                        // If we reached here, we add the post
                         postList.add(post);
                     }
+
                     filteredList.clear();
                     filteredList.addAll(postList);
-                    adapter.notifyDataSetChanged(); // Refresh RecyclerView
+                    adapter.notifyDataSetChanged();
                 })
                 .addOnFailureListener(e -> {
                     Log.e("Firestore", "Error fetching posts", e);
                 });
     }
 
-    /**
-     * Setup real-time search functionality
-     */
+
+
     private void setupSearch() {
         searchEditText.addTextChangedListener(new TextWatcher() {
             @Override
