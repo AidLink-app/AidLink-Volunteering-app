@@ -2,6 +2,7 @@ package com.example.welcom;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
@@ -21,6 +22,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import android.widget.EditText;
 import android.widget.Toast;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 public class MainActivity extends AppCompatActivity {
     private EditText emailField, passwordField;
@@ -61,6 +63,16 @@ public class MainActivity extends AppCompatActivity {
                                     User user = new User(
                                             email, role, "", "", "", "", ""
                                     );
+                                    // get token for notifications
+                                    FirebaseMessaging.getInstance().getToken().addOnCompleteListener(task -> {
+                                        if(task.isSuccessful()){
+                                            String token = task.getResult();
+                                            Log.i("My token:" ,token);
+                                            FirebaseFirestore.getInstance().collection("users").document(FirebaseAuth.getInstance().getUid()).update("fcmToken",token);
+                                            user.setFcmToken(token);
+
+                                        }
+                                    });
                                     intent.putExtra("user", user);
                                     startActivity(intent);
                                     finish();

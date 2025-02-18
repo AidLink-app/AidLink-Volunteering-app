@@ -2,6 +2,9 @@ package com.example.welcom;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Handler;
+import android.os.Looper;
+import android.se.omapi.Session;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +14,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 
+import java.net.PasswordAuthentication;
+import java.util.Properties;
+
+
+
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -19,11 +27,19 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.net.ssl.HttpsURLConnection;
 
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder> {
 
@@ -32,6 +48,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
     private FirebaseFirestore db;
     private OnPostDeleteListener deleteListener;
     private String userRole;
+
 
     // Interface for handling post deletions
     public interface OnPostDeleteListener {
@@ -266,17 +283,70 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                             break;
                         }
                     }
+
                     notifyDataSetChanged(); // Notify the adapter to re-bind all views
+                    sendNotificationToApprovedUsers(selectedUsers);
+
+
                 })
                 .addOnFailureListener(e -> {
                     Toast.makeText(context, "Error approving volunteers: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 });
     }
 
-    //TODO: approval email
-    private void sendApprovalEmails(List<String> userEmails) {
-        // You need to implement email sending, which might involve calling a Firebase Function or another backend service
-        // Example: Using Firebase Functions to trigger an email service like SendGrid or using a direct SMTP server setup
+
+
+    private void sendNotificationToApprovedUsers(List<String> selectedUsers) {
+        for (String email : selectedUsers) {
+            db.collection("users").document(email).get().addOnSuccessListener(documentSnapshot -> {
+                if (documentSnapshot.exists()) {
+                    String fcmToken = documentSnapshot.getString("fcmToken");
+                    if (fcmToken != null) {
+                        sendFCMNotification(fcmToken, "You have been approved!", "Your volunteer application has been approved.");
+                    }
+                }
+            });
+        }
+    }
+
+
+    private void sendFCMNotification(String fcmToken, String title, String message) {
+        new Thread(() -> {
+            try {
+                URL url = new URL("https://fcm.googleapis.com/fcm/send");
+                HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
+                conn.setRequestMethod("POST");
+                conn.setRequestProperty("Authorization", "key=BLeDgda1bbA7NAn9il3JAYhcyWVZEFqII4NG1zdeWjtK5tn6y7yAH2G2xOAwsOzF22WZw8tjWl5rwfoWJ_WCxOw");
+                conn.setRequestProperty("Content-Type", "application/json");
+
+                JSONObject json = new JSONObject();
+                json.put("to", fcmToken);
+                JSONObject notification = new JSONObject();
+                notification.put("title", title);
+                notification.put("body", message);
+                json.put("notification", notification);
+
+                OutputStream outputStream = conn.getOutputStream();
+                outputStream.write(json.toString().getBytes("UTF-8"));
+                outputStream.close();
+
+                int responseCode = conn.getResponseCode();
+                System.out.println("Response Code : " + responseCode);
+
+                BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                String inputLine;
+                StringBuilder response = new StringBuilder();
+
+                while ((inputLine = in.readLine()) != null) {
+                    response.append(inputLine);
+                }
+                in.close();
+                System.out.println("Response: " + response.toString());
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }).start();
     }
 
 

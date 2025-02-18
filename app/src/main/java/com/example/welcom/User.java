@@ -11,6 +11,8 @@ public class User implements Serializable {
     private String name;
     private String phone;
 
+    private String fcmToken;
+
     public User() {}
     public User(String email, String role, String imageUrl, String pdfUrl, String description, String name, String phone) {
         this.email = email;
@@ -48,5 +50,13 @@ public class User implements Serializable {
 
     public String getPhone() {
         return phone;
+    }
+
+    public String getFcmToken() {
+        return fcmToken;
+    }
+
+    public void setFcmToken(String fcmToken) {
+        this.fcmToken = fcmToken;
     }
 }

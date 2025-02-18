@@ -55,9 +55,12 @@ dependencies {
     implementation(libs.firebase.auth)
     implementation(libs.firebase.storage.ktx)
     implementation(libs.espresso.intents)
+    implementation(libs.firebase.messaging)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
+    implementation("com.sun.mail:android-mail:1.6.0")
+    implementation("com.sun.mail:android-activation:1.6.0")
     implementation ("androidx.cardview:cardview:1.0.0")
     implementation ("com.google.android.material:material:1.9.0")
     // Espresso Core
