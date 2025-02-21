@@ -1,0 +1,23 @@
+<!-- layout/activity_notifications.xml -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+
+    <!-- RecyclerView for displaying notifications -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/notifications_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" /> <!-- This ensures it uses all available space above the navigation bar -->
+
+    <!-- Bottom Navigation View -->
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottom_navigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:background="?android:attr/windowBackground"
+        app:menu="@menu/nav_menu" /> <!-- Ensure this refers to the correct menu resource -->
+</LinearLayout>

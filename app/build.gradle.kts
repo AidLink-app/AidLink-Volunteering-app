@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.google.gms.google.services)
 }
 
+
 android {
     namespace = "com.example.welcom"
     compileSdk = 34
@@ -35,6 +36,13 @@ android {
     kotlinOptions {
         jvmTarget = "11" // Align Kotlin JVM target with Java
     }
+
+    defaultConfig {
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
+    buildFeatures{
+        viewBinding = true
+    }
 }
 
 
@@ -46,7 +54,25 @@ dependencies {
     implementation(libs.firebase.firestore)
     implementation(libs.firebase.auth)
     implementation(libs.firebase.storage.ktx)
+    implementation(libs.espresso.intents)
+    implementation(libs.firebase.messaging)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
+    implementation("com.sun.mail:android-mail:1.6.0")
+    implementation("com.sun.mail:android-activation:1.6.0")
+    implementation ("androidx.cardview:cardview:1.0.0")
+    implementation ("com.google.android.material:material:1.9.0")
+    // Espresso Core
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+    // Espresso Contrib for advanced interactions (optional)
+    androidTestImplementation("androidx.test.espresso:espresso-contrib:3.5.1")
+    // JUnit Test Rules
+    androidTestImplementation("androidx.test.ext:junit:1.1.5")
+    // Android Test Runner
+    androidTestImplementation("androidx.test:runner:1.5.2")
+    // Idling Resources for async tasks (optional)
+    androidTestImplementation("androidx.test.espresso:espresso-idling-resource:3.5.1")
+
+
 }

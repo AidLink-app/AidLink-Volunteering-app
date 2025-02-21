@@ -79,7 +79,7 @@ class OrganizationRegistrationActivity : AppCompatActivity() {
             Toast.makeText(this, "Upload failed", Toast.LENGTH_SHORT).show()
         }
     }
-
+// Handles image selection from gallery and PDF selection from file storage, initiating upload to Firebase Storage on selection.
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK) {
@@ -99,8 +99,7 @@ class OrganizationRegistrationActivity : AppCompatActivity() {
             }
         }
     }
-
-
+// Registers a new user with email and password, uploads associated image and PDF, and saves user details to Firestore.
     private fun registerUser(email: String, password: String) {
         auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener { task ->
             if (task.isSuccessful) {
@@ -138,7 +137,8 @@ class OrganizationRegistrationActivity : AppCompatActivity() {
             "email" to email,
             "imageURL" to imageUrl,
             "pdfURL" to pdfUrl,
-            "description" to description
+            "description" to description,
+            "role" to "organization"
         )
         FirebaseFirestore.getInstance().collection("users").document(email)
             .set(user)
@@ -149,7 +149,7 @@ class OrganizationRegistrationActivity : AppCompatActivity() {
                 Toast.makeText(this, "Error saving user details: ${e.message}", Toast.LENGTH_SHORT).show()
             }
     }
-
+// Checks if the READ_EXTERNAL_STORAGE permission is granted, and requests it if not. Necessary for API level 23 and above.
     private fun checkAndRequestPermissions() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             val readStoragePermission = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
@@ -159,3 +159,5 @@ class OrganizationRegistrationActivity : AppCompatActivity() {
         }
     }
 }
+
+
