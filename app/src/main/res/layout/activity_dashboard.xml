@@ -39,6 +39,20 @@
         android:layout_weight="1"
         android:padding="8dp" />
 
+    <!-- Sign Out Button -->
+    <Button
+        android:id="@+id/btnSignOut"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:backgroundTint="@android:color/holo_red_dark"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="12dp"
+        android:text="Sign Out"
+        android:gravity="center"
+        android:textColor="@android:color/white"
+        android:textStyle="bold" />
 
     <!-- Horizontal Layout for Buttons -->
 

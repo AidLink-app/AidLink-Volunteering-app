@@ -33,7 +33,17 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        if (UserSession.getUser() == null) {
+            UserSession.init(this); // This is where initialization happens.
+        }
 
+        User user = UserSession.getUser();
+        if (user != null) {
+            // User is logged in, redirect to DashboardActivity
+            Intent intent = new Intent(this, DashboardActivity.class);
+            startActivity(intent);
+            finish();
+        }
         auth = FirebaseAuth.getInstance();
         emailField = findViewById(R.id.email);
         passwordField = findViewById(R.id.password);
@@ -81,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
 
                                         }
                                     });
-                                    intent.putExtra("user", user);
+                                    UserSession.setUser(user);
                                     startActivity(intent);
                                     finish();
                                 }
