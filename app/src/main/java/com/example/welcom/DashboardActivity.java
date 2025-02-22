@@ -177,8 +177,10 @@ public class DashboardActivity extends AppCompatActivity {
 
                     for (QueryDocumentSnapshot document : querySnapshot) {
                         Object dateField = document.get("date");
-
-
+                        if (document.contains("activeStatus")){
+                            boolean activeStatus = document.getBoolean("activeStatus");
+                            boolean check = false;
+                        }
                         // Skip posts with missing or incorrect date formats
                         if (dateField == null) {
                             Log.e("Firestore", "Skipping post: date is null in document " + document.getId());
