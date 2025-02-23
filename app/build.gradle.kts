@@ -72,8 +72,10 @@ dependencies {
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     // Android Test Runner
     androidTestImplementation("androidx.test:runner:1.5.2")
+    implementation("com.google.android.gms:play-services-auth:20.1.0")
     // Idling Resources for async tasks (optional)
     androidTestImplementation("androidx.test.espresso:espresso-idling-resource:3.5.1")
+    implementation("androidx.security:security-crypto:1.0.0-rc03")
 
 
 }

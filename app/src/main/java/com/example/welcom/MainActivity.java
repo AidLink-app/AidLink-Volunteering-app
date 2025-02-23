@@ -1,6 +1,7 @@
 package com.example.welcom;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -19,31 +20,41 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import com.google.firebase.auth.FirebaseAuth;
+
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.messaging.FirebaseMessaging;
+import androidx.security.crypto.EncryptedSharedPreferences;
+import androidx.security.crypto.MasterKeys;
+
 
 public class MainActivity extends AppCompatActivity {
     private EditText emailField, passwordField;
     private FirebaseAuth auth;
+    private SharedPreferences securePrefs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        if (UserSession.getUser() == null) {
-            UserSession.init(this); // This is where initialization happens.
-        }
 
-        User user = UserSession.getUser();
-        if (user != null) {
+        UserSession.init(this);
+
+        if (UserSession.isRememberMe() && UserSession.getUser() != null) {
             // User is logged in, redirect to DashboardActivity
             Intent intent = new Intent(this, DashboardActivity.class);
             startActivity(intent);
             finish();
         }
+
+        CheckBox rememberMeCheckBox = findViewById(R.id.rememberMeCheckBox);
+        rememberMeCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            UserSession.setRememberMe(isChecked);
+        });
+
         auth = FirebaseAuth.getInstance();
         emailField = findViewById(R.id.email);
         passwordField = findViewById(R.id.password);
@@ -64,6 +75,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
+
     private void loginUser() {
         String email = emailField.getText().toString().trim();
         String password = passwordField.getText().toString().trim();

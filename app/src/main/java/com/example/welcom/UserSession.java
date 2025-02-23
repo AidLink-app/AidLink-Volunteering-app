@@ -7,6 +7,7 @@ import com.google.gson.Gson;
 public class UserSession {
     private static final String PREF_NAME = "UserSession";
     private static final String KEY_USER = "user";
+    private static final String KEY_REMEMBER_ME = "remember_me";
 
     private static User user;
     private static SharedPreferences sharedPreferences;
@@ -18,6 +19,16 @@ public class UserSession {
     public static void init(Context context) {
         if (sharedPreferences == null) {
             sharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        }
+    }
+
+    public static boolean isRememberMe() {
+        return sharedPreferences != null && sharedPreferences.getBoolean(KEY_REMEMBER_ME, false);
+    }
+
+    public static void setRememberMe(boolean rememberMe) {
+        if (sharedPreferences != null) {
+            sharedPreferences.edit().putBoolean(KEY_REMEMBER_ME, rememberMe).apply();
         }
     }
 
