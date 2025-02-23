@@ -37,17 +37,12 @@ public class NotificationsActivity extends AppCompatActivity {
 
         bottomNavigationView = findViewById(R.id.bottom_navigation);
 
-        bottomNavigationView.setSelectedItemId(R.id.nav_notifications);
-
         bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
             if(item.getItemId() == R.id.nav_home) {
                 Intent intent2 = new Intent(this, DashboardActivity.class);
                 startActivity(intent2);
             }
             if(item.getItemId() == R.id.nav_settings) {
-                return true;
-            }
-            if (item.getItemId() == R.id.nav_notifications) {
                 return true;
             }
             if(item.getItemId() ==R.id.nav_profile) {

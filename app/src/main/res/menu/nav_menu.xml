@@ -11,13 +11,9 @@
     <item
         android:id="@+id/nav_addpost"
         android:icon="@drawable/ic_addpost"
-        android:title="Profile" />
+        android:title="Add Post" />
     <item
         android:id="@+id/nav_settings"
         android:icon="@drawable/ic_settings"
-        android:title="Settings" />
-    <item
-        android:id="@+id/nav_notifications"
-        android:icon="@drawable/ic_notifications"
         android:title="Settings" />
 </menu>

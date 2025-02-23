@@ -3,6 +3,7 @@ package com.example.welcom;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +17,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class HomeFragment extends Fragment {
 
@@ -25,16 +29,18 @@ public class HomeFragment extends Fragment {
     private List<Post> postList;
     private EditText searchEditText;
     private List<Post> filteredList = new ArrayList<>(); // List for search filtering
-
+    private Map<String, String> organizationMap = new HashMap<>(); // Cache for organization names
+    private FirebaseFirestore db;
     private String userRole;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
-        recyclerView = view.findViewById(R.id.recyclerView);
-        searchEditText = view.findViewById(R.id.searchEditText);
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        db = FirebaseFirestore.getInstance();
+
+        setupRecyclerView(view);
+        setupSearchEditText(view);
 
         postList = new ArrayList<>();
         User user = UserSession.getUser();
@@ -48,41 +54,106 @@ public class HomeFragment extends Fragment {
 
         recyclerView.setAdapter(adapter);
 
-        searchEditText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                filterPosts(s.toString());
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-            }
-        });
-
-        fetchPosts();
+        fetchOrganizations();
+        fetchPostsFromFirestore();
 
         return view;
     }
 
-    private void fetchPosts() {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private void setupRecyclerView(View view) {
+        recyclerView = view.findViewById(R.id.recyclerView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+    }
+
+    private void setupSearchEditText(View view) {
+        searchEditText = view.findViewById(R.id.searchEditText);
+        searchEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                filterPosts(s.toString());
+            }
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
+    }
+
+    /**
+      * Fetch organizations and store them in a map
+      */
+    private void fetchOrganizations() {
+        db.collection("organizations")
+                .get()
+                .addOnSuccessListener(querySnapshot -> {
+                    for (QueryDocumentSnapshot document : querySnapshot) {
+                        String orgId = document.getId();
+                        String orgName = document.getString("name");
+                        organizationMap.put(orgId, orgName); // Store in cache
+                    }
+                    fetchPostsFromFirestore(); // Ensure posts are fetched after organizations
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("Firestore", "Error fetching organizations", e);
+                });
+    }
+
+    private void fetchPostsFromFirestore() {
         db.collection("posts")
                 .get()
                 .addOnSuccessListener(querySnapshot -> {
                     postList.clear();
+
                     for (QueryDocumentSnapshot document : querySnapshot) {
+                        Object dateField = document.get("date");
+
+
+                        // Skip posts with missing or incorrect date formats
+                        if (dateField == null) {
+                            Log.e("Firestore", "Skipping post: date is null in document " + document.getId());
+                            continue;
+                        }
+
+                        if (dateField instanceof String) {
+                            Log.e("Firestore", "Skipping post: date is String instead of Timestamp in document " + document.getId());
+                            continue;
+                        }
+
+                        if (!(dateField instanceof com.google.firebase.Timestamp)) {
+                            Log.e("Firestore", "Skipping post: date is not a valid Timestamp in document " + document.getId());
+                            continue;
+                        }
+
+                        com.google.firebase.Timestamp ts = (com.google.firebase.Timestamp) dateField;
+
+                        // Ignore posts with past events
+                        if (ts.toDate().before(new Date())) {
+                            Log.e("Firestore", "Skipping post: date is in the past for document " + document.getId());
+                            continue;
+                        }
+
+                        // Parse the post normally
                         Post post = document.toObject(Post.class);
+                        post.setDate(ts); // Set correct Timestamp
+
+                        // Match organization ID to name
+                        String organizationId = document.getString("organizationId");
+                        if (organizationId != null && organizationMap.containsKey(organizationId)) {
+                            post.setOrganization(organizationMap.get(organizationId));
+                        } else {
+                            post.setOrganization("Unknown Organization");
+                        }
+
+                        // If we reached here, we add the post
                         postList.add(post);
                     }
+
+                    filteredList.clear();
+                    filteredList.addAll(postList);
                     adapter.notifyDataSetChanged();
                 })
                 .addOnFailureListener(e -> {
-                    TextView textView = getView().findViewById(R.id.textView);
-                    textView.setText("Failed to fetch posts.");
+                    Log.e("Firestore", "Error fetching posts", e);
                 });
     }
 
@@ -101,5 +172,11 @@ public class HomeFragment extends Fragment {
             }
         }
         adapter.notifyDataSetChanged(); // Refresh RecyclerView with filtered data
+    }
+
+    private void onPostInteraction(Post post) {
+        postList.remove(post);
+        filteredList.remove(post);
+        adapter.notifyDataSetChanged();
     }
 }
