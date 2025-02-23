@@ -87,7 +87,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         String currentUserEmail = currentUser.getEmail();
 
         // Display buttons based on whether the current user is the creator of the post
-        if (post.getOrganization().equals(currentUser.getName())) {
+        if (post.getOrganization().equals(currentUser.getEmail())) {
             holder.btnEditPost.setVisibility(View.VISIBLE);
             holder.btnDeletePost.setVisibility(View.VISIBLE);
             holder.btnViewRegistrations.setVisibility(View.VISIBLE);
@@ -203,30 +203,9 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
         // 🛠️ **Edit Post Button**
         holder.btnEditPost.setOnClickListener(v -> {
-            db.collection("posts")
-                    .whereEqualTo("title", post.getTitle())
-                    .whereEqualTo("description", post.getDescription())
-                    .get()
-                    .addOnSuccessListener(queryDocumentSnapshots -> {
-                        if (!queryDocumentSnapshots.isEmpty()) {
-                            String documentId = queryDocumentSnapshots.getDocuments().get(0).getId();
-                            Intent intent = new Intent(context, PostActivity.class);
-                            intent.putExtra("postId", documentId); // Pass document ID
-                            intent.putExtra("postTitle", post.getTitle());
-                            intent.putExtra("postDescription", post.getDescription());
-                            intent.putExtra("postDate", post.getDate());
-                            intent.putExtra("postLocation", post.getLocation());
-                            intent.putExtra("postOrganization", post.getOrganization());
-                            intent.putExtra("postCategory", post.getCategory());
-                            intent.putExtra("postImageUrl", post.getImageUrl());
-                            context.startActivity(intent);
-                        } else {
-                            Toast.makeText(context, "Failed to find post for editing", Toast.LENGTH_SHORT).show();
-                        }
-                    })
-                    .addOnFailureListener(e -> {
-                        Toast.makeText(context, "Error retrieving post: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                    });
+            Intent intent = new Intent(context, PostActivity.class);
+            intent.putExtra("post", post);  // Ensure that Post class implements Serializable or Parcelable
+            context.startActivity(intent);
         });
 
         // 🗑️ **Delete Post Button**

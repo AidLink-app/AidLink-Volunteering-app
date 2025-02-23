@@ -43,7 +43,7 @@ public class DashboardActivity extends AppCompatActivity {
                 return true;
             }
             if(item.getItemId() == R.id.nav_addpost && userRole.equals("organization")) {
-                replaceFragment(new SettingsFragment());
+                replaceFragment(new AddPostFragment());
                 return true;
             }
             return true;
