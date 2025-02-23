@@ -52,6 +52,23 @@ public class DashboardActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
 
+        Button btnGoToAdminDashboard = findViewById(R.id.btnGoToAdminDashboard);
+
+        // Check if the button is correctly found and log the result
+        if (btnGoToAdminDashboard != null) {
+            Log.d("DashboardActivity", "Button found!");
+
+            // Set the click listener for the button
+            btnGoToAdminDashboard.setOnClickListener(v -> {
+                Log.d("DashboardActivity", "Button clicked!"); // Log button click
+                // Create an Intent to go to AdminDashboardActivity
+                Intent intent = new Intent(DashboardActivity.this, AdminDashboardActivity.class);
+                startActivity(intent); // Start the AdminDashboardActivity
+            });
+        } else {
+            Log.e("DashboardActivity", "Button not found!");
+        }
+
         bottomNavigationView = findViewById(R.id.bottom_navigation);
 
         bottomNavigationView.setSelectedItemId(R.id.nav_home);

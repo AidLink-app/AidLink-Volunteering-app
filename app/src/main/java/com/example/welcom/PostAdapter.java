@@ -13,6 +13,13 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.URL;
+import javax.net.ssl.HttpsURLConnection;
 
 import java.net.PasswordAuthentication;
 import java.util.Properties;
@@ -148,14 +155,17 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                                                 String notificationMessage = "You have successfully registered for " + post.getTitle();
                                                 createNotificationForUser(currentUserEmail, notificationTitle, notificationMessage);
 
-//                                                // Navigate to RegistrationConfirmationActivity
-//                                                Intent intent = new Intent(context, RegistrationConfirmationActivity.class);
-//
-//                                                // Pass the WhatsApp link of the post to the next Activity
-//                                                intent.putExtra("whatsappLink", post.getWhatsapp_link()); // Ensure Post has a getWhatsappLink() method
-//
-//                                                // Start the RegistrationConfirmationActivity
-//                                                context.startActivity(intent);
+                                                // Send push notification to the registered user
+                                                db.collection("users").document(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                                        .get()
+                                                        .addOnSuccessListener(documentSnapshot -> {
+                                                            if (documentSnapshot.exists()) {
+                                                                String fcmToken = documentSnapshot.getString("fcmToken");
+                                                                if (fcmToken != null) {
+                                                                    sendFCMNotification(fcmToken, notificationTitle, notificationMessage);
+                                                                }
+                                                            }
+                                                        });
                                             })
                                             .addOnFailureListener(e -> {
                                                 Toast.makeText(context, "Failed to register: " + e.getMessage(), Toast.LENGTH_SHORT).show();
@@ -172,6 +182,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                         Toast.makeText(context, "Error fetching post: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                     });
         });
+
 
 
         // 🛠️ **Edit Post Button**
@@ -276,18 +287,17 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                 .update(updates)
                 .addOnSuccessListener(aVoid -> {
                     Toast.makeText(context, "Volunteers Approved and Post Deactivated Successfully!", Toast.LENGTH_SHORT).show();
-                    // Find the post in the list and update its status
+                    // Update local list for the post
                     for (Post post : posts) {
                         if (post.getPostId().equals(postId)) {
                             post.setActiveStatus(false);
                             break;
                         }
                     }
+                    notifyDataSetChanged(); // Refresh the UI
 
-                    notifyDataSetChanged(); // Notify the adapter to re-bind all views
+                    // Send push notifications to the approved users
                     sendNotificationToApprovedUsers(selectedUsers);
-
-
                 })
                 .addOnFailureListener(e -> {
                     Toast.makeText(context, "Error approving volunteers: " + e.getMessage(), Toast.LENGTH_SHORT).show();
@@ -297,15 +307,25 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
 
     private void sendNotificationToApprovedUsers(List<String> selectedUsers) {
-        for (String email : selectedUsers) {
-            db.collection("users").document(email).get().addOnSuccessListener(documentSnapshot -> {
-                if (documentSnapshot.exists()) {
-                    String fcmToken = documentSnapshot.getString("fcmToken");
-                    if (fcmToken != null) {
-                        sendFCMNotification(fcmToken, "You have been approved!", "Your volunteer application has been approved.");
-                    }
-                }
-            });
+        // Loop through each approved user and send a push notification.
+        for (String userId : selectedUsers) {
+            // Assuming you're storing user documents with the same identifier used in selectedUsers (e.g. email or UID)
+            db.collection("users").document(userId).get()
+                    .addOnSuccessListener(documentSnapshot -> {
+                        if (documentSnapshot.exists()) {
+                            String token = documentSnapshot.getString("fcmToken");
+                            if (token != null) {
+                                String title = "Approval Notification";
+                                String message = "Your volunteer application has been approved!";
+                                sendFCMNotification(token, title, message);
+                            } else {
+                                Log.w("Notification", "FCM token is null for user: " + userId);
+                            }
+                        }
+                    })
+                    .addOnFailureListener(e -> {
+                        Log.e("Notification", "Failed to fetch user token for userId: " + userId, e);
+                    });
         }
     }
 
@@ -315,39 +335,49 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             try {
                 URL url = new URL("https://fcm.googleapis.com/fcm/send");
                 HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
+                conn.setUseCaches(false);
+                conn.setDoInput(true);
+                conn.setDoOutput(true);
                 conn.setRequestMethod("POST");
-                conn.setRequestProperty("Authorization", "key=BLeDgda1bbA7NAn9il3JAYhcyWVZEFqII4NG1zdeWjtK5tn6y7yAH2G2xOAwsOzF22WZw8tjWl5rwfoWJ_WCxOw");
+
+                conn.setRequestProperty("Authorization", "key=879518126265-37arubcgb1n28lk63q40q5lbf704o2u3.apps.googleusercontent.com");
                 conn.setRequestProperty("Content-Type", "application/json");
 
+                // Build the JSON payload for the push notification
                 JSONObject json = new JSONObject();
                 json.put("to", fcmToken);
+
                 JSONObject notification = new JSONObject();
                 notification.put("title", title);
                 notification.put("body", message);
                 json.put("notification", notification);
 
-                OutputStream outputStream = conn.getOutputStream();
-                outputStream.write(json.toString().getBytes("UTF-8"));
-                outputStream.close();
+                // Write the JSON payload to the connection output stream
+                OutputStream os = conn.getOutputStream();
+                os.write(json.toString().getBytes("UTF-8"));
+                os.close();
 
+                // Read the FCM response (for debugging purposes)
                 int responseCode = conn.getResponseCode();
-                System.out.println("Response Code : " + responseCode);
+                Log.d("FCM", "Response Code: " + responseCode);
 
                 BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
                 String inputLine;
                 StringBuilder response = new StringBuilder();
-
                 while ((inputLine = in.readLine()) != null) {
                     response.append(inputLine);
                 }
                 in.close();
-                System.out.println("Response: " + response.toString());
-
+                Log.d("FCM", "Response: " + response.toString());
             } catch (Exception e) {
-                e.printStackTrace();
+                Log.e("FCM", "Error sending notification", e);
             }
         }).start();
     }
+
+
+
+
 
 
     @Override

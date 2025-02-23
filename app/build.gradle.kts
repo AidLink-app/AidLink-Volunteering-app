@@ -63,6 +63,10 @@ dependencies {
     implementation("com.sun.mail:android-activation:1.6.0")
     implementation ("androidx.cardview:cardview:1.0.0")
     implementation ("com.google.android.material:material:1.9.0")
+    implementation ("com.google.firebase:firebase-messaging:23.1.2")
+    implementation ("com.google.firebase:firebase-firestore:24.5.0")
+    implementation ("com.onesignal:OneSignal:[5.0.0, 5.1.99]")
+
     // Espresso Core
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
     // Espresso Contrib for advanced interactions (optional)

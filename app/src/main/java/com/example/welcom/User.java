@@ -10,7 +10,6 @@ public class User implements Serializable {
     private String description;
     private String name;
     private String phone;
-
     private String fcmToken;
 
     public User() {}

@@ -49,41 +49,49 @@ public class MainActivity extends AppCompatActivity {
     private void loginUser() {
         String email = emailField.getText().toString().trim();
         String password = passwordField.getText().toString().trim();
-        // Create the User object
 
         if (!email.isEmpty() && !password.isEmpty()) {
             auth.signInWithEmailAndPassword(email, password)
                     .addOnCompleteListener(this, task -> {
                         if (task.isSuccessful()) {
-                            getUserRole(email, new RoleCallback() {
-                                @Override
-                                public void onRoleFetched(String role) {
-                                    // Handle the retrieved role
-                                    Intent intent = new Intent(MainActivity.this, DashboardActivity.class);
-                                    User user = new User(
-                                            email, role, "", "", "", "", ""
-                                    );
-                                    // get token for notifications
-                                    FirebaseMessaging.getInstance().getToken().addOnCompleteListener(task -> {
-                                        if(task.isSuccessful()){
-                                            String token = task.getResult();
-                                            Log.i("My token:" ,token);
-                                            FirebaseFirestore.getInstance().collection("users").document(FirebaseAuth.getInstance().getUid()).update("fcmToken",token);
-                                            user.setFcmToken(token);
-
+                            // Fetch the user's document from Firestore
+                            FirebaseFirestore db = FirebaseFirestore.getInstance();
+                            db.collection("users").document(email)
+                                    .get()
+                                    .addOnSuccessListener(documentSnapshot -> {
+                                        if (documentSnapshot.exists()) {
+                                            String role = documentSnapshot.getString("role");
+                                            if ("organization".equals(role)) {
+                                                // For organizations, check the "approved" flag
+                                                Boolean approved = documentSnapshot.getBoolean("approved");
+                                                if (approved != null && approved) {
+                                                    // Organization approved: launch DashboardActivity
+                                                    Intent intent = new Intent(MainActivity.this, DashboardActivity.class);
+                                                    User user = new User(email, role, "", "", "", "", "");
+                                                    intent.putExtra("user", user);
+                                                    startActivity(intent);
+                                                    finish();
+                                                } else {
+                                                    // Organization not approved: launch PendingApprovalActivity
+                                                    Intent intent = new Intent(MainActivity.this, PendingApprovalActivity.class);
+                                                    startActivity(intent);
+                                                    finish();
+                                                }
+                                            } else {
+                                                // For volunteer users: launch DashboardActivity directly
+                                                Intent intent = new Intent(MainActivity.this, DashboardActivity.class);
+                                                User user = new User(email, role, "", "", "", "", "");
+                                                intent.putExtra("user", user);
+                                                startActivity(intent);
+                                                finish();
+                                            }
+                                        } else {
+                                            Toast.makeText(MainActivity.this, "User record not found", Toast.LENGTH_SHORT).show();
                                         }
+                                    })
+                                    .addOnFailureListener(e -> {
+                                        Toast.makeText(MainActivity.this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                                     });
-                                    intent.putExtra("user", user);
-                                    startActivity(intent);
-                                    finish();
-                                }
-                                @Override
-                                public void onError(String error) {
-                                    // Handle any error that occurred
-                                    System.err.println("Error fetching role: " + error);
-                                    Toast.makeText(MainActivity.this, "Error: " + error, Toast.LENGTH_SHORT).show();
-                                }
-                            });
                         } else {
                             Toast.makeText(MainActivity.this, "Login failed: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
                         }
@@ -93,10 +101,12 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+
     public interface RoleCallback {
         void onRoleFetched(String role);  // Called when the role is successfully fetched
         void onError(String error);      // Called when there's an error
     }
+
 
     public void getUserRole(String userEmail, RoleCallback callback) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();

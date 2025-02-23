@@ -39,6 +39,15 @@
         android:layout_weight="1"
         android:padding="8dp" />
 
+    <Button
+        android:id="@+id/btnGoToAdminDashboard"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Go to Admin Dashboard"
+        android:layout_marginTop="20dp"
+        android:layout_gravity="center" />
+
+
 
     <!-- Horizontal Layout for Buttons -->
 

@@ -103,6 +103,17 @@
             android:inputType="phone"
             android:contentDescription="Enter your phone number" />
 
+        <!-- Choose Image Button -->
+        <Button
+            android:id="@+id/btnChooseImage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Choose Profile Image"
+            android:backgroundTint="@color/blue"
+            android:textColor="@color/white"
+            android:contentDescription="Choose a profile image" />
+
         <!-- Submit Button -->
         <Button
             android:id="@+id/submit"
@@ -113,5 +124,7 @@
             android:backgroundTint="@color/blue"
             android:textColor="@color/white"
             android:contentDescription="Submit your volunteer registration details" />
+
     </LinearLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
