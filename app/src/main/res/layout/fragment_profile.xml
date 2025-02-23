@@ -10,5 +10,28 @@
         android:layout_height="wrap_content"
         android:text="User Profile Information"
         android:layout_centerInParent="true" />
+    <TextView
+        android:id="@+id/tvUserName"
+        android:layout_below="@+id/tvProfileInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="User Name"
+        android:layout_marginTop="10dp"/>
+
+    <TextView
+        android:id="@+id/tvUserEmail"
+        android:layout_below="@+id/tvUserName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="User Email"
+        android:layout_marginTop="10dp"/>
+
+    <TextView
+        android:id="@+id/tvUserRole"
+        android:layout_below="@+id/tvUserEmail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="User Role"
+        android:layout_marginTop="10dp"/>
 
 </RelativeLayout>

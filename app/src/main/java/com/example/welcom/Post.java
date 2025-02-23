@@ -1,11 +1,13 @@
 package com.example.welcom;
 import com.google.firebase.Timestamp;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Post {
+public class Post implements Serializable {
     private String postId;
     private String title;
     private String description;

@@ -37,109 +37,79 @@ public class PostActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post);
 
-        // Initialize Firestore
-        db = FirebaseFirestore.getInstance();
-
         // Initialize fields
-        titleField = findViewById(R.id.titleField);
-        descriptionField = findViewById(R.id.descriptionField);
-        dateField = findViewById(R.id.dateField);
-        locationField = findViewById(R.id.locationField);
-        categoryField = findViewById(R.id.categoryField);
-        imageUrlField = findViewById(R.id.imageUrlField);
-        saveButton = findViewById(R.id.saveButton);
+        EditText titleField = findViewById(R.id.titleField);
+        EditText descriptionField = findViewById(R.id.descriptionField);
+        EditText dateField = findViewById(R.id.dateField);
+        EditText locationField = findViewById(R.id.locationField);
+        EditText categoryField = findViewById(R.id.categoryField);
+        EditText imageUrlField = findViewById(R.id.imageUrlField);
+        Button saveButton = findViewById(R.id.saveButton);
 
-        // Check intent for edit mode
-        Intent intent = getIntent();
-        if (intent != null && intent.hasExtra("post")) {
-            isEditMode = true;
-            post = (Post) intent.getSerializableExtra("post");
-            postId = intent.getStringExtra("postId"); // Firestore document ID
-            populateFields(post);
-        }
-
-        saveButton.setOnClickListener(view -> savePost());
-    }
-
-    private void populateFields(Post post) {
-        // Prefill fields with the current post details
+        // Check if editing
+        Post post = (Post) getIntent().getSerializableExtra("post");
         if (post != null) {
+            // Populate the fields
             titleField.setText(post.getTitle());
             descriptionField.setText(post.getDescription());
-            Timestamp timestamp = post.getDate();
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-            String dateString = sdf.format(timestamp.toDate());
-            dateField.setText(dateString);
+            dateField.setText(sdf.format(post.getDate().toDate()));
             locationField.setText(post.getLocation());
             categoryField.setText(post.getCategory());
             imageUrlField.setText(post.getImageUrl());
         }
-    }
 
-    private void savePost() {
-        // Get input values
-        String title = titleField.getText().toString();
-        String description = descriptionField.getText().toString();
-        String date = dateField.getText().toString();
-        String location = locationField.getText().toString();
-        String category = categoryField.getText().toString();
-        String imageUrl = imageUrlField.getText().toString();
-
-        // Validate input fields
-        if (title.isEmpty() || description.isEmpty() || date.isEmpty() || location.isEmpty() || category.isEmpty()) {
-            Toast.makeText(this, "Please fill in all required fields", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        // Log input data for debugging
-        Log.d("PostActivity", "Saving Post: " + title + ", " + description);
-
-        Map<String, Object> postMap = new HashMap<>();
-        postMap.put("title", title);
-        postMap.put("description", description);
-        postMap.put("date", date);
-        postMap.put("location", location);
-        postMap.put("category", category);
-        postMap.put("imageUrl", imageUrl);
-
-        if (isEditMode) {
-            // Ensure postId is valid
-            if (postId == null || postId.isEmpty()) {
-                Toast.makeText(this, "Invalid post. Please try again.", Toast.LENGTH_SHORT).show();
-                return;
+        // Setup save button click listener
+        saveButton.setOnClickListener(view -> {
+            if (post != null) {
+                updatePost(post);
+            } else {
+                createPost();
             }
-
-            // Update Firestore document
-            db.collection("posts")
-                    .document(postId)
-                    .update(postMap)
-                    .addOnSuccessListener(aVoid -> {
-                        Toast.makeText(this, "Post updated successfully!", Toast.LENGTH_SHORT).show();
-                        navigateToDashboard();
-                    })
-                    .addOnFailureListener(e -> {
-                        Toast.makeText(this, "Failed to update post: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                    });
-        } else {
-            // Add new post to Firestore
-            db.collection("posts")
-                    .add(postMap)
-                    .addOnSuccessListener(documentReference -> {
-                        Toast.makeText(this, "Post added successfully!", Toast.LENGTH_SHORT).show();
-                        navigateToDashboard();
-                    })
-                    .addOnFailureListener(e -> {
-                        Toast.makeText(this, "Failed to add post: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                    });
-        }
+        });
     }
 
-    private void navigateToDashboard() {
-        Intent intent = new Intent(PostActivity.this, DashboardActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
-        finish();
+    private void createPost() {
+        Map<String, Object> postMap = new HashMap<>();
+        postMap.put("title", titleField.getText().toString());
+        postMap.put("description", descriptionField.getText().toString());
+        postMap.put("date", descriptionField.getText().toString());
+        postMap.put("location", descriptionField.getText().toString());
+        postMap.put("category", descriptionField.getText().toString());
+        postMap.put("imageUrl", descriptionField.getText().toString());
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("posts").add(postMap)
+                .addOnSuccessListener(documentReference -> {
+                    Toast.makeText(this, "Post added successfully!", Toast.LENGTH_SHORT).show();
+                    finish(); // Close the activity
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(this, "Failed to add post: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
     }
+
+    private void updatePost(Post post) {
+        Map<String, Object> postMap = new HashMap<>();
+        postMap.put("title", titleField.getText().toString());
+        postMap.put("description", descriptionField.getText().toString());
+        postMap.put("date", descriptionField.getText().toString());
+        postMap.put("location", descriptionField.getText().toString());
+        postMap.put("category", descriptionField.getText().toString());
+        postMap.put("imageUrl", descriptionField.getText().toString());
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("posts").document(post.getPostId())
+                .update(postMap)
+                .addOnSuccessListener(aVoid -> {
+                    Toast.makeText(this, "Post updated successfully!", Toast.LENGTH_SHORT).show();
+                    finish(); // Close the activity
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(this, "Failed to update post: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
+    }
+
 }
 
 

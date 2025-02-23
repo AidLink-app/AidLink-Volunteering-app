@@ -82,8 +82,22 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         holder.title.setText(post.getTitle());
         holder.description.setText(post.getDescription());
 
+        User currentUser = UserSession.getUser();
         // Get current user's email
-        String currentUserEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail();
+        String currentUserEmail = currentUser.getEmail();
+
+        // Display buttons based on whether the current user is the creator of the post
+        if (post.getOrganization().equals(currentUser.getName())) {
+            holder.btnEditPost.setVisibility(View.VISIBLE);
+            holder.btnDeletePost.setVisibility(View.VISIBLE);
+            holder.btnViewRegistrations.setVisibility(View.VISIBLE);
+        } else {
+            holder.btnEditPost.setVisibility(View.GONE);
+            holder.btnDeletePost.setVisibility(View.GONE);
+            if (currentUser.getRole().equals("organization")){
+                holder.btnRegister.setVisibility(View.GONE);
+            }
+        }
 
         holder.btnViewRegistrations.setOnClickListener(v -> {
             showRegistrationsDialog(post.getRegisteredUsers(), post.getPostId());
@@ -196,7 +210,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                     .addOnSuccessListener(queryDocumentSnapshots -> {
                         if (!queryDocumentSnapshots.isEmpty()) {
                             String documentId = queryDocumentSnapshots.getDocuments().get(0).getId();
-                            Intent intent = new Intent(context, EditPostActivity.class);
+                            Intent intent = new Intent(context, PostActivity.class);
                             intent.putExtra("postId", documentId); // Pass document ID
                             intent.putExtra("postTitle", post.getTitle());
                             intent.putExtra("postDescription", post.getDescription());
