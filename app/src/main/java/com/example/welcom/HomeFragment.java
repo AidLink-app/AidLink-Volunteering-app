@@ -1,5 +1,6 @@
 package com.example.welcom;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -103,6 +104,17 @@ public class HomeFragment extends Fragment {
 
         catAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         categoryFilterSpinner.setAdapter(catAdapter);
+
+        View btnGoToAdminDashboard = view.findViewById(R.id.btnGoToAdminDashboard);
+        if ("admin".equalsIgnoreCase(userRole)) {
+            btnGoToAdminDashboard.setVisibility(View.VISIBLE);
+            btnGoToAdminDashboard.setOnClickListener(v -> {
+                Intent intent = new Intent(getContext(), AdminDashboardActivity.class);
+                startActivity(intent);
+            });
+        } else {
+            btnGoToAdminDashboard.setVisibility(View.GONE);
+        }
 
         fetchPostsFromFirestore();
 
