@@ -14,6 +14,7 @@ public class Post implements Serializable {
     private Timestamp date;
     private String hours;
     private String location;
+    private String locationArea;
     private String name;
     private String category;
     private String imageUrl;
@@ -31,16 +32,16 @@ public class Post implements Serializable {
     }
 
     // Constructor with all fields
-    public Post(String title, String description, Timestamp date, String location,
-                String organization, String email, String category, String imageUrl, String whatsapp_link) {
+    public Post(String title, String description, Timestamp date, String location, String locationArea,
+                String organization, String category, String imageUrl, String whatsapp_link) {
         this.title = title;
         this.description = description;
         this.date = date;
         this.location = location;
         this.name = organization;
-        this.creatorEmail = email;
         this.category = category;
         this.imageUrl = imageUrl;
+        this.locationArea = locationArea;
         this.whatsapp_link = whatsapp_link;
         this.activeStatus = true;
     }
@@ -59,6 +60,10 @@ public class Post implements Serializable {
 
     public String getDescription() {
         return description;
+    }
+
+    public String getLocationArea() {
+        return locationArea;
     }
 
     public Timestamp getDate() {
@@ -104,6 +109,10 @@ public class Post implements Serializable {
         this.creatorEmail = creatorEmail;
     }
     public void setHours(String hours) { this.hours = hours; }
+
+    public void setLocationArea(String locationArea) {
+        this.locationArea = locationArea;
+    }
 
     public void setActiveStatus(boolean status){
         this.activeStatus = status;

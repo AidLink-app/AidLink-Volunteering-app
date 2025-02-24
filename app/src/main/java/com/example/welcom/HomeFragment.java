@@ -7,7 +7,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -30,6 +33,8 @@ public class HomeFragment extends Fragment {
     private EditText searchEditText;
     private List<Post> filteredList = new ArrayList<>(); // List for search filtering
     private FirebaseFirestore db;
+    private Spinner locationFilterSpinner;
+    private Spinner categoryFilterSpinner;
     private User user;
     private String userRole;
     @Nullable
@@ -37,10 +42,10 @@ public class HomeFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
-        db = FirebaseFirestore.getInstance();
+    db = FirebaseFirestore.getInstance();
 
-        setupRecyclerView(view);
-        setupSearchEditText(view);
+    setupRecyclerView(view);
+    setupSearchEditText(view);
 
         postList = new ArrayList<>();
         user = UserSession.getUser();
@@ -52,9 +57,54 @@ public class HomeFragment extends Fragment {
             adapter.notifyDataSetChanged();
         }, userRole);
 
-        recyclerView.setAdapter(adapter);
 
-        fetchPostsFromFirestore();
+    recyclerView.setAdapter(adapter);
+
+    locationFilterSpinner = view.findViewById(R.id.locationFilterSpinner);
+    categoryFilterSpinner = view.findViewById(R.id.categoryFilterSpinner);
+
+    // Location filter spinner
+    ArrayAdapter<CharSequence> locAdapter = ArrayAdapter.createFromResource(
+            requireContext(),
+            R.array.filter_location_options,
+            android.R.layout.simple_spinner_item
+    );
+
+    locAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+    locationFilterSpinner.setAdapter(locAdapter);
+
+    // Category filter spinner
+    ArrayAdapter<CharSequence> catAdapter = ArrayAdapter.createFromResource(
+            requireContext(),
+            R.array.filter_category_options,
+            android.R.layout.simple_spinner_item
+    );
+
+    locationFilterSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        @Override
+        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            // Re-filter whenever user picks a new location
+            filterPosts(searchEditText.getText().toString());
+        }
+        @Override
+        public void onNothingSelected(AdapterView<?> parent) { }
+    });
+
+    categoryFilterSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        @Override
+        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            // Re-filter whenever user picks a new category
+            filterPosts(searchEditText.getText().toString());
+        }
+        @Override
+        public void onNothingSelected(AdapterView<?> parent) { }
+    });
+
+
+    catAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+    categoryFilterSpinner.setAdapter(catAdapter);
+
+    fetchPostsFromFirestore();
 
         return view;
     }
@@ -129,21 +179,49 @@ public class HomeFragment extends Fragment {
                 });
     }
 
+    /**
+     * Filter posts based on search query
+     */
     private void filterPosts(String query) {
+        String selectedLocation = locationFilterSpinner.getSelectedItem().toString();
+        String selectedCategory = categoryFilterSpinner.getSelectedItem().toString();
+
         filteredList.clear();
-        if (query.isEmpty()) {
-            filteredList.addAll(postList); // Show all posts if search query is empty
-        } else {
-            for (Post post : postList) {
-                if (post.getTitle().toLowerCase().contains(query.toLowerCase()) ||
-                        post.getDescription().toLowerCase().contains(query.toLowerCase()) ||
-                        post.getCategory().toLowerCase().contains(query.toLowerCase()) ||
-                        post.getOrganization().toLowerCase().contains(query.toLowerCase())) {
-                    filteredList.add(post);
+        for (Post post : postList) {
+            // Step 1: Does the text query match (title/description/category/organization)?
+            boolean matchesSearchText = query.isEmpty()
+                    || post.getTitle().toLowerCase().contains(query.toLowerCase())
+                    || post.getDescription().toLowerCase().contains(query.toLowerCase())
+                    || (post.getCategory() != null && post.getCategory().toLowerCase().contains(query.toLowerCase()))
+                    || (post.getOrganization() != null && post.getOrganization().toLowerCase().contains(query.toLowerCase()));
+
+            // Step 2: Does location match?
+            //         We check post.getLocationArea(), which you set as "locationArea" in Firestore.
+            //         If selectedLocation is "All", accept it. Otherwise, compare.
+            boolean matchesLocation = true;
+            if (!selectedLocation.equalsIgnoreCase("All")) {
+                // Make sure post.getLocationArea() is not null and compare
+                if (post.getLocationArea() == null
+                        || !post.getLocationArea().equalsIgnoreCase(selectedLocation)) {
+                    matchesLocation = false;
                 }
             }
+
+            // Step 3: Does category match?
+            boolean matchesCategory = true;
+            if (!selectedCategory.equalsIgnoreCase("All")) {
+                if (post.getCategory() == null
+                        || !post.getCategory().equalsIgnoreCase(selectedCategory)) {
+                    matchesCategory = false;
+                }
+            }
+
+            // If all conditions are true => add it
+            if (matchesSearchText && matchesLocation && matchesCategory) {
+                filteredList.add(post);
+            }
         }
-        adapter.notifyDataSetChanged(); // Refresh RecyclerView with filtered data
+        adapter.notifyDataSetChanged();
     }
 
     private void onPostInteraction(Post post) {

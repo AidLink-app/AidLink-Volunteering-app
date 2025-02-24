@@ -9,36 +9,51 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
+        <!-- Return Button -->
+        <Button
+            android:id="@+id/btnReturn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minHeight="48dp"
+            android:text="Return"
+            android:backgroundTint="@color/dark_blue"
+            android:textColor="@android:color/white"
+            android:layout_marginBottom="8dp"/>
+
+        <!-- Title -->
         <EditText
-            android:id="@+id/titleField"
+            android:id="@+id/editTextTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:minHeight="48dp"
             android:hint="Title"
-            android:inputType="textCapSentences"/>
+            android:inputType="text" />
 
+        <!-- Description -->
         <EditText
-            android:id="@+id/descriptionField"
+            android:id="@+id/editTextDescription"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:minHeight="48dp"
             android:hint="Description"
-            android:inputType="textMultiLine"/>
+            android:inputType="textMultiLine"
+            android:minLines="3" />
 
+        <!-- Date -->
         <EditText
             android:id="@+id/editTextDate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:minHeight="48dp"
-            android:hint="Date (e.g., YYYY-MM-DD)"
-            android:inputType="date"/>
+            android:hint="Date (DD-MM-YYYY)"
+            android:inputType="date" />
 
         <EditText
             android:id="@+id/editTextStartTime"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Start Time"
             android:minHeight="48dp"
+            android:hint="Start Time"
             android:focusable="false"
             android:clickable="true"/>
 
@@ -46,36 +61,54 @@
             android:id="@+id/editTextEndTime"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="End Time"
             android:minHeight="48dp"
+            android:hint="End Time"
             android:focusable="false"
             android:clickable="true"/>
 
+
+
+        <!-- Location -->
         <EditText
-            android:id="@+id/locationField"
+            android:id="@+id/editTextLocation"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:minHeight="48dp"
             android:hint="Location"
-            android:inputType="textCapWords"/>
+            android:inputType="text" />
 
-        <EditText
-            android:id="@+id/categoryField"
+        <Spinner
+            android:id="@+id/locationSpinner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:minHeight="48dp"
-            android:hint="Category"
-            android:inputType="textCapWords"/>
+            />
 
-        <EditText
-            android:id="@+id/imageUrlField"
+        <!-- Category -->
+        <!--        <EditText-->
+        <!--            android:id="@+id/editTextCategory"-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:hint="Category"-->
+        <!--            android:inputType="text" />-->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Select Category"
+            android:textStyle="bold"
+            android:paddingTop="8dp"
+            android:paddingBottom="4dp"/>
+
+        <Spinner
+            android:id="@+id/categorySpinner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:minHeight="48dp"
-            android:hint="Image URL"
-            android:inputType="textUri"/>
+            android:layout_marginBottom="8dp"/>
 
-        <!-- WhatsApp Link -->
+
+        <!-- New ImageButton in place of the above EditText -->
+
         <EditText
             android:id="@+id/editTextWhatsappLink"
             android:layout_width="match_parent"
@@ -85,12 +118,31 @@
             android:inputType="textUri"
             android:layout_marginTop="8dp" />
 
+        <!-- WhatsApp Link -->
+
+        <!-- Submit Button -->
+
+        <ImageButton
+            android:id="@+id/buttonImagePicker"
+            android:layout_width="52dp"
+            android:layout_height="62dp"
+            android:layout_marginTop="10dp"
+            android:adjustViewBounds="true"
+            android:background="@null"
+            android:contentDescription="@string/app_name"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_camera" />
+
         <Button
-            android:id="@+id/savePostButton"
+            android:id="@+id/buttonSubmit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:minHeight="48dp"
-            android:text="Save Post"
-            android:layout_marginTop="16dp"/>
+            android:text="Submit Post"
+            android:layout_marginTop="16dp"
+            android:backgroundTint="@color/blue"
+            android:textColor="@android:color/white"
+            android:textStyle="bold" />
     </LinearLayout>
 </ScrollView>
+
+

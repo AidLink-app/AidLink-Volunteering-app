@@ -2,8 +2,10 @@ package com.example.welcom;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -70,6 +72,10 @@ public class EditPostActivity extends AppCompatActivity {
                 .update("title", title, "description", description, "date", date, "location", location, "category", category, "imageUrl", imageUrl)
                 .addOnSuccessListener(aVoid -> {
                     Toast.makeText(this, "Post updated successfully!", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(EditPostActivity.this, DashboardActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
+                    finish();
                 })
                 .addOnFailureListener(e -> {
                     Toast.makeText(this, "Failed to update post: " + e.getMessage(), Toast.LENGTH_LONG).show();

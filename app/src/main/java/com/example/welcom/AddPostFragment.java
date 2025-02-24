@@ -1,31 +1,61 @@
 package com.example.welcom;
 
+import static android.app.Activity.RESULT_OK;
+
+import android.Manifest;
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.Spinner;
 import android.widget.Toast;
+import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
+import java.io.File;
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
 public class AddPostFragment extends Fragment {
 
-    private EditText titleField, descriptionField, editTextDate, locationField, categoryField, imageUrlField, editTextWhatsappLink, editTextStartTime, editTextEndTime;
+    private EditText editTextTitle, editTextDescription, editTextDate, editTextLocation, editTextWhatsappLink, editTextStartTime, editTextEndTime;
+    private Spinner organizationSpinner, locationSpinner, categorySpinner;
+    private ImageButton buttonImagePicker;
+    private Button buttonSubmit;
+    private FirebaseFirestore db;
+    private StorageReference storageRef;
 
-    private User user;
+    private Uri selectedImageUri;
+    private static final int REQUEST_IMAGE_CAPTURE = 100;
+    private static final int REQUEST_IMAGE_GALLERY = 101;
+
     public AddPostFragment() {
         // Required empty public constructor
     }
@@ -34,20 +64,31 @@ public class AddPostFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_add_post, container, false);
 
-        titleField = view.findViewById(R.id.titleField);
-        descriptionField = view.findViewById(R.id.descriptionField);
+        db = FirebaseFirestore.getInstance();
+        storageRef = FirebaseStorage.getInstance().getReference();
+
+        // Initialize UI Components
+        editTextTitle = view.findViewById(R.id.editTextTitle);
+        editTextDescription = view.findViewById(R.id.editTextDescription);
         editTextDate = view.findViewById(R.id.editTextDate);
-        locationField = view.findViewById(R.id.locationField);
-        categoryField = view.findViewById(R.id.categoryField);
-        imageUrlField = view.findViewById(R.id.imageUrlField);
-        editTextWhatsappLink = view.findViewById(R.id.editTextWhatsappLink);
         editTextStartTime = view.findViewById(R.id.editTextStartTime);
         editTextEndTime = view.findViewById(R.id.editTextEndTime);
+        editTextLocation = view.findViewById(R.id.editTextLocation);
+        editTextWhatsappLink = view.findViewById(R.id.editTextWhatsappLink);
+        locationSpinner = view.findViewById(R.id.locationSpinner);
+        categorySpinner = view.findViewById(R.id.categorySpinner);
+        buttonSubmit = view.findViewById(R.id.buttonSubmit);
+        buttonImagePicker = view.findViewById(R.id.buttonImagePicker);
 
-        user = UserSession.getUser();
+        // Set up date and time pickers
         setupDateTimePickers();
-        Button savePostButton = view.findViewById(R.id.savePostButton);
-        savePostButton.setOnClickListener(v -> savePost());
+
+        // Set up button listeners
+        buttonSubmit.setOnClickListener(v -> submitPost());
+        buttonImagePicker.setOnClickListener(v -> selectImage());
+
+        // Populate Spinners
+        loadSpinners();
 
         return view;
     }
@@ -60,78 +101,144 @@ public class AddPostFragment extends Fragment {
 
     private void showDatePickerDialog() {
         Calendar calendar = Calendar.getInstance();
-        DatePickerDialog dialog = new DatePickerDialog(getActivity(),
-                (view, year, month, dayOfMonth) -> {
-                    Calendar selectedDate = Calendar.getInstance();
-                    selectedDate.set(year, month, dayOfMonth);
-                    editTextDate.setText(new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(selectedDate.getTime()));
-                },
-                calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
-        dialog.show();
+        new DatePickerDialog(getContext(), this::onDateSet, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show();
+    }
+
+    private void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+        month = month + 1; // Calendar month is zero-based
+        String formattedDate = String.format(Locale.getDefault(), "%d-%02d-%02d", year, month, dayOfMonth);
+        editTextDate.setText(formattedDate);
     }
 
     private void showTimePickerDialog(EditText timeField) {
         Calendar calendar = Calendar.getInstance();
-        TimePickerDialog timePickerDialog = new TimePickerDialog(getActivity(),
-                (timePicker, selectedHour, selectedMinute) -> timeField.setText(String.format(Locale.getDefault(), "%02d:%02d", selectedHour, selectedMinute)),
-                calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), true);
-        timePickerDialog.show();
+        new TimePickerDialog(getContext(), (tp, hourOfDay, minute) -> {
+            String formattedTime = String.format(Locale.getDefault(), "%02d:%02d", hourOfDay, minute);
+            timeField.setText(formattedTime);
+        }, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), true).show();
     }
 
-    private void savePost() {
-        String title = titleField.getText().toString();
-        String description = descriptionField.getText().toString();
-        String dateStr = editTextDate.getText().toString().trim();
-        String location = locationField.getText().toString();
-        String category = categoryField.getText().toString();
-        String imageUrl = imageUrlField.getText().toString();
-        String startTime = editTextStartTime.getText().toString().trim();
-        String endTime = editTextEndTime.getText().toString().trim();
-        String whatsappLink = editTextWhatsappLink.getText().toString().trim();
+    private void loadSpinners() {
+        // Example spinner loading logic
+        List<String> categories = new ArrayList<>();
+        categories.add("Category 1");
+        categories.add("Category 2");
 
+        ArrayAdapter<String> categoryAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, categories);
+        categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        categorySpinner.setAdapter(categoryAdapter);
 
-        Timestamp dateTimestamp = null;
-        try {
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-            Date dateObj = sdf.parse(dateStr);
-            if (dateObj != null) {
-                dateTimestamp = new Timestamp(dateObj);
-            } else {
-                Toast.makeText(getActivity(), "Invalid date format!", Toast.LENGTH_SHORT).show();
-                return;
+        List<String> locations = new ArrayList<>();
+        locations.add("Location 1");
+        locations.add("Location 2");
+
+        ArrayAdapter<String> locationAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, locations);
+        locationAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        locationSpinner.setAdapter(locationAdapter);
+    }
+
+    private void selectImage() {
+        final CharSequence[] options = {"Take Photo", "Choose from Gallery", "Cancel"};
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle("Add Photo!");
+        builder.setItems(options, (dialog, item) -> {
+            if (options[item].equals("Take Photo")) {
+                if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                    requestPermissions(new String[]{Manifest.permission.CAMERA}, REQUEST_IMAGE_CAPTURE);
+                } else {
+                    openCamera();
+                }
+            } else if (options[item].equals("Choose from Gallery")) {
+                openGallery();
+            } else if (options[item].equals("Cancel")) {
+                dialog.dismiss();
             }
-        } catch (ParseException e) {
-            e.printStackTrace();
-            Toast.makeText(getActivity(), "Invalid date format, please use yyyy-MM-dd", Toast.LENGTH_SHORT).show();
-            return;
-        }
+        });
+        builder.show();
+    }
 
-        if (title.isEmpty() || description.isEmpty() || location.isEmpty() || category.isEmpty()) {
-            Toast.makeText(getActivity(), "All fields are required.", Toast.LENGTH_LONG).show();
+    private void openCamera() {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (takePictureIntent.resolveActivity(getContext().getPackageManager()) != null) {
+            File photoFile = null;
+            try {
+                photoFile = createImageFile();
+            } catch (IOException ex) {
+                Toast.makeText(getContext(), "Error occurred while creating the file", Toast.LENGTH_SHORT).show();
+            }
+            if (photoFile != null) {
+                Uri photoURI = FileProvider.getUriForFile(getContext(), "com.example.android.fileprovider", photoFile);
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+            }
+        }
+    }
+
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
+        File storageDir = getContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                "JPEG_" + timeStamp,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+
+        // Save a file path for use with ACTION_VIEW intents
+        return image;
+    }
+
+    private void openGallery() {
+        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        startActivityForResult(intent, REQUEST_IMAGE_GALLERY);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK && data != null) {
+            if (requestCode == REQUEST_IMAGE_GALLERY) {
+                selectedImageUri = data.getData();
+                buttonImagePicker.setImageURI(selectedImageUri);
+            } else if (requestCode == REQUEST_IMAGE_CAPTURE) {
+                // handle camera image
+                buttonImagePicker.setImageURI(selectedImageUri);
+            }
+        }
+    }
+
+    private void submitPost() {
+        String title = editTextTitle.getText().toString();
+        String description = editTextDescription.getText().toString();
+        String date = editTextDate.getText().toString();
+        String startTime = editTextStartTime.getText().toString();
+        String endTime = editTextEndTime.getText().toString();
+        String location = editTextLocation.getText().toString();
+        String category = categorySpinner.getSelectedItem().toString();
+        String whatsappLink = editTextWhatsappLink.getText().toString();
+
+        if (title.isEmpty() || description.isEmpty() || date.isEmpty() || startTime.isEmpty() || endTime.isEmpty() || location.isEmpty() || category.isEmpty() || whatsappLink.isEmpty()) {
+            Toast.makeText(getContext(), "All fields are required.", Toast.LENGTH_SHORT).show();
             return;
         }
 
         Map<String, Object> post = new HashMap<>();
-        post.put("activeStatus", true);
         post.put("title", title);
         post.put("description", description);
-        post.put("date", dateTimestamp);
-        String hours = startTime + " - " + endTime;
-        post.put("hours", hours);
+        post.put("date", date);
+        post.put("startTime", startTime);
+        post.put("endTime", endTime);
         post.put("location", location);
-        post.put("organizationName", user.getName()); // Reference to selected organization
-        post.put("organizationEmail", user.getEmail()); // Store the organization Name
-        post.put("whatsapp_link", whatsappLink);
         post.put("category", category);
-        post.put("imageUrl", imageUrl);
+        post.put("whatsappLink", whatsappLink);
+        post.put("imageUri", selectedImageUri != null ? selectedImageUri.toString() : "");
 
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("posts").add(post)
                 .addOnSuccessListener(documentReference -> {
-                    Toast.makeText(getActivity(), "Post added successfully!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Post added successfully!", Toast.LENGTH_SHORT).show();
                 })
                 .addOnFailureListener(e -> {
-                    Toast.makeText(getActivity(), "Failed to add post: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(getContext(), "Failed to add post: " + e.getMessage(), Toast.LENGTH_LONG).show();
                 });
     }
 }

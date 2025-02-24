@@ -2,21 +2,47 @@ const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 admin.initializeApp();
 
-exports.sendFCMNotification = functions.https.onCall((data, context) => {
-    const message = {
-        notification: {
-            title: data.title,
-            body: data.message
-        },
-        token: data.fcmToken
-    };
+// Cloud Function triggered when a post is updated
+exports.sendApprovalNotification = functions.firestore
+  .document('posts/{postId}')
+  .onUpdate((change, context) => {
+    const beforeData = change.before.data();
+    const afterData = change.after.data();
 
-    return admin.messaging().send(message)
-        .then((response) => {
-            return { success: true, response: response };
+    // Check if approvedUsers changed (i.e. new approvals)
+    const beforeApproved = beforeData.approvedUsers || [];
+    const afterApproved = afterData.approvedUsers || [];
+
+    // Identify newly approved users
+    const newApprovals = afterApproved.filter(user => !beforeApproved.includes(user));
+
+    // For each new approval, send a notification
+    newApprovals.forEach(userId => {
+      admin.firestore().collection('users').doc(userId).get()
+        .then(doc => {
+          if (doc.exists) {
+            const token = doc.data().fcmToken;
+            if (token) {
+              const payload = {
+                notification: {
+                  title: 'Approval Notification',
+                  body: 'Your volunteer application has been approved!',
+                }
+              };
+
+              return admin.messaging().sendToDevice(token, payload);
+            } else {
+              console.log(`No token for user ${userId}`);
+            }
+          }
         })
-        .catch((error) => {
-            console.error("Error sending FCM message:", error);
-            return { success: false, error: error };
+        .then(response => {
+          console.log(`Notification sent to ${userId}:`, response);
+        })
+        .catch(err => {
+          console.error(`Error sending notification to ${userId}:`, err);
         });
-});
+    });
+
+    return null;
+  });
