@@ -161,14 +161,14 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                                                 String notificationMessage = "You have successfully registered for " + post.getTitle();
                                                 createNotificationForUser(currentUserEmail, notificationTitle, notificationMessage);
 
-//                                                // Navigate to RegistrationConfirmationActivity
-//                                                Intent intent = new Intent(context, RegistrationConfirmationActivity.class);
-//
-//                                                // Pass the WhatsApp link of the post to the next Activity
-//                                                intent.putExtra("whatsappLink", post.getWhatsapp_link()); // Ensure Post has a getWhatsappLink() method
-//
-//                                                // Start the RegistrationConfirmationActivity
-//                                                context.startActivity(intent);
+                                                // Navigate to RegistrationConfirmationActivity
+                                                Intent intent = new Intent(context, RegistrationConfirmationActivity.class);
+
+                                                // Pass the WhatsApp link of the post to the next Activity
+                                                intent.putExtra("whatsappLink", post.getWhatsapp_link()); // Ensure Post has a getWhatsappLink() method
+
+                                                // Start the RegistrationConfirmationActivity
+                                                context.startActivity(intent);
                                             })
                                             .addOnFailureListener(e -> {
                                                 Toast.makeText(context, "Failed to register: " + e.getMessage(), Toast.LENGTH_SHORT).show();
