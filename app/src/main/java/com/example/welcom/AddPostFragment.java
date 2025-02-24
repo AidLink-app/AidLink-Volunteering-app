@@ -227,10 +227,16 @@ public class AddPostFragment extends Fragment {
             return;
         }
 
+        Timestamp dateTimestamp = convertStringToDateTimestamp(date);
+        if (dateTimestamp == null) {
+            Toast.makeText(getContext(), "Invalid date format, please use yyyy-MM-dd", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         Map<String, Object> post = new HashMap<>();
         post.put("title", title);
         post.put("description", description);
-        post.put("date", date);
+        post.put("date", dateTimestamp);
         post.put("startTime", startTime);
         post.put("endTime", endTime);
         post.put("location", location);
@@ -247,5 +253,16 @@ public class AddPostFragment extends Fragment {
                 .addOnFailureListener(e -> {
                     Toast.makeText(getContext(), "Failed to add post: " + e.getMessage(), Toast.LENGTH_LONG).show();
                 });
+    }
+
+    private Timestamp convertStringToDateTimestamp(String dateString) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        try {
+            Date date = sdf.parse(dateString);
+            return new Timestamp(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }
