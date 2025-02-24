@@ -108,6 +108,13 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             holder.postImage.setVisibility(View.GONE);
         }
 
+        // Set the initial state of the register button
+        if (post.getRegisteredUsers() != null && post.getRegisteredUsers().contains(currentUser.getEmail())) {
+            holder.btnRegister.setText("Unregister");
+        } else {
+            holder.btnRegister.setText("Register");
+        }
+
 
         // Get current user's email
         String currentUserEmail = currentUser.getEmail();
