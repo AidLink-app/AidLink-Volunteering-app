@@ -177,6 +177,7 @@ public class HomeFragment extends Fragment {
                         // Parse the post normally
                         Post post = document.toObject(Post.class);
                         post.setDate(ts); // Set correct Timestamp
+                        post.setPostId(document.getId());
                         if (document.contains("organizationEmail")){
                             post.setCreatorEmail(document.getString("organizationEmail"));
                         }
