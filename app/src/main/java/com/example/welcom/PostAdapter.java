@@ -87,7 +87,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         String currentUserEmail = currentUser.getEmail();
 
         // Display buttons based on whether the current user is the creator of the post
-        if (post.getCreatorEmail().equals(currentUser.getEmail())) {
+        if (!post.getCreatorEmail().equals(currentUser.getEmail())) {
             holder.btnEditPost.setVisibility(View.VISIBLE);
             holder.btnDeletePost.setVisibility(View.VISIBLE);
             holder.btnViewRegistrations.setVisibility(View.VISIBLE);

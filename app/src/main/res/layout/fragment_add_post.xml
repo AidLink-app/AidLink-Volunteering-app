@@ -26,12 +26,30 @@
             android:inputType="textMultiLine"/>
 
         <EditText
-            android:id="@+id/dateField"
+            android:id="@+id/editTextDate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:minHeight="48dp"
             android:hint="Date (e.g., YYYY-MM-DD)"
             android:inputType="date"/>
+
+        <EditText
+            android:id="@+id/editTextStartTime"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Start Time"
+            android:minHeight="48dp"
+            android:focusable="false"
+            android:clickable="true"/>
+
+        <EditText
+            android:id="@+id/editTextEndTime"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="End Time"
+            android:minHeight="48dp"
+            android:focusable="false"
+            android:clickable="true"/>
 
         <EditText
             android:id="@+id/locationField"
@@ -56,6 +74,16 @@
             android:minHeight="48dp"
             android:hint="Image URL"
             android:inputType="textUri"/>
+
+        <!-- WhatsApp Link -->
+        <EditText
+            android:id="@+id/editTextWhatsappLink"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="48dp"
+            android:hint="WhatsApp Link"
+            android:inputType="textUri"
+            android:layout_marginTop="8dp" />
 
         <Button
             android:id="@+id/savePostButton"

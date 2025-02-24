@@ -44,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseAuth auth;
     private GoogleSignInClient googleSignInClient;
     private static final int RC_SIGN_IN = 100;
+    private CheckBox rememberMeCheckBox;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +58,8 @@ public class MainActivity extends AppCompatActivity {
         SignInButton googleSignInButton = findViewById(R.id.google_sign_in_button);
         googleSignInButton.setOnClickListener(v -> signInWithGoogle());
 
+        rememberMeCheckBox = findViewById(R.id.rememberMeCheckBox);
+        rememberMeCheckBox.setChecked(UserSession.isRememberMe());
 
         UserSession.init(this);
 
@@ -67,7 +70,6 @@ public class MainActivity extends AppCompatActivity {
             finish();
         }
 
-        CheckBox rememberMeCheckBox = findViewById(R.id.rememberMeCheckBox);
         rememberMeCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
             UserSession.setRememberMe(isChecked);
         });
