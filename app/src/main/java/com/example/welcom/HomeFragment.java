@@ -24,6 +24,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import android.content.Intent;
 
 public class HomeFragment extends Fragment {
 
@@ -103,6 +104,17 @@ public class HomeFragment extends Fragment {
 
     catAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
     categoryFilterSpinner.setAdapter(catAdapter);
+
+        View btnGoToAdminDashboard = view.findViewById(R.id.btnGoToAdminDashboard);
+        if ("admin".equalsIgnoreCase(userRole)) {
+            btnGoToAdminDashboard.setVisibility(View.VISIBLE);
+            btnGoToAdminDashboard.setOnClickListener(v -> {
+                Intent intent = new Intent(getContext(), AdminDashboardActivity.class);
+                startActivity(intent);
+            });
+        } else {
+            btnGoToAdminDashboard.setVisibility(View.GONE);
+        }
 
     fetchPostsFromFirestore();
 

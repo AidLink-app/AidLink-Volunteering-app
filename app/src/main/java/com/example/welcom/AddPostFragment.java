@@ -119,22 +119,21 @@ public class AddPostFragment extends Fragment {
     }
 
     private void loadSpinners() {
-        // Example spinner loading logic
-        List<String> categories = new ArrayList<>();
-        categories.add("Category 1");
-        categories.add("Category 2");
-
-        ArrayAdapter<String> categoryAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, categories);
-        categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        categorySpinner.setAdapter(categoryAdapter);
-
-        List<String> locations = new ArrayList<>();
-        locations.add("Location 1");
-        locations.add("Location 2");
-
-        ArrayAdapter<String> locationAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, locations);
+        ArrayAdapter<CharSequence> locationAdapter = ArrayAdapter.createFromResource(
+                getContext(),
+                R.array.location_options,
+                android.R.layout.simple_spinner_item
+        );
         locationAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         locationSpinner.setAdapter(locationAdapter);
+
+        ArrayAdapter<CharSequence> categoryAdapter = ArrayAdapter.createFromResource(
+                getContext(),
+                R.array.category_options,
+                android.R.layout.simple_spinner_item
+        );
+        categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        categorySpinner.setAdapter(categoryAdapter);
     }
 
     private void selectImage() {

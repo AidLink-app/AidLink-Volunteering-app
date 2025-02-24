@@ -307,38 +307,6 @@ public class AddPostActivity extends AppCompatActivity {
 
         Timestamp dateTimestamp = new Timestamp(parsedDate);
 
-//        // 2) Create the post object map
-//        Map<String, Object> post = new HashMap<>();
-//        post.put("activeStatus", true);
-//        post.put("title", title);
-//        post.put("description", description);
-//        // Store the date as a real Firebase Timestamp
-//        post.put("date", dateTimestamp);
-//        post.put("locationArea", location);
-//        post.put("location", locationText);
-//        post.put("organizationId", organizationId);
-//        post.put("organization", organization);
-//        post.put("whatsapp_link", whatsappLink);
-//        post.put("category", category);
-//
-//        // 3) Add to Firestore
-//        db.collection("posts")
-//                .add(post)
-//                .addOnSuccessListener(documentReference -> {
-//                    Toast.makeText(this, "Post added successfully!", Toast.LENGTH_SHORT).show();
-//                    startActivity(new Intent(AddPostActivity.this, DashboardActivity.class)
-//                            .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK));
-//                    finish();
-//                })
-//                .addOnFailureListener(e -> {
-//                    Toast.makeText(this, "Failed to add post: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-//                });
-//
-//        if (selectedImageUri == null) {
-//            Toast.makeText(this, "Please select an image first!", Toast.LENGTH_SHORT).show();
-//            return;
-//        }
-
         uploadImageAndSavePost(title, description, dateTimestamp, locationText, location, organizationId,
                 organization, category, whatsappLink, startTime, endTime);
 

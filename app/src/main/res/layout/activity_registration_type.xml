@@ -6,33 +6,40 @@
     android:background="@color/light_blue"
     tools:context=".RegistrationTypeActivity">
 
+    <!-- Register as Volunteer Button -->
+
+    <!-- Register as Organizer Button -->
+
     <com.google.android.material.button.MaterialButton
         android:id="@+id/volunteerButton"
-        android:layout_width="247dp"
-        android:layout_height="57dp"
+        android:layout_width="300dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="296dp"
         android:backgroundTint="@color/blue"
-        android:text="Register as Volunteer"
+        android:elevation="4dp"
+        android:text="Volunteer"
         android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:cornerRadius="8dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.463"
+        app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.372" />
+        app:rippleColor="@color/white" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/organizerButton"
-        android:layout_width="249dp"
-        android:layout_height="73dp"
+        android:layout_width="300dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="128dp"
         android:backgroundTint="@color/blue"
-        android:text="Register as Organizer"
+        android:elevation="4dp"
+        android:text="Organizer"
         android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:cornerRadius="8dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.456"
+        app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/volunteerButton"
-        app:layout_constraintVertical_bias="0.26" />
-
+        app:layout_constraintTop_toTopOf="@+id/volunteerButton"
+        app:rippleColor="@color/white" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -30,11 +30,9 @@ class OrganizationRegistrationActivity : AppCompatActivity() {
     private lateinit var btnChooseImage: Button
     private lateinit var btnUploadPDF: Button
     private lateinit var etDescription: EditText
-    private lateinit var etName: EditText
     private lateinit var btnSubmit: Button
     private var selectedImageUri: Uri? = null
     private var selectedPDFUri: Uri? = null
-    private var user: User = UserSession.getUser()
     private var imageUriFromFile: Uri? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,7 +46,6 @@ class OrganizationRegistrationActivity : AppCompatActivity() {
         btnChooseImage = findViewById(R.id.btnChooseImage)
         btnUploadPDF = findViewById(R.id.btnUploadPDF)
         etDescription = findViewById(R.id.etDescription)
-        etName  = findViewById(R.id.Name)
         btnSubmit = findViewById(R.id.btnSubmit)
 
         setupButtonClickListeners()
@@ -102,8 +99,8 @@ class OrganizationRegistrationActivity : AppCompatActivity() {
         btnSubmit.setOnClickListener {
             val email = findViewById<EditText>(R.id.etEmail).text.toString().trim()
             val password = findViewById<EditText>(R.id.etPassword).text.toString().trim()
-            val description = findViewById<EditText>(R.id.etDescription).text.toString().trim()
-            registerUser(email, password)
+            val description = etDescription.text.toString().trim()
+
             if (email.isNotEmpty() && password.isNotEmpty() && selectedPDFUri != null && description.isNotEmpty()) {
                 registerUser(email, password)
                 startActivity(Intent(this, PendingApprovalActivity::class.java))
@@ -137,7 +134,8 @@ class OrganizationRegistrationActivity : AppCompatActivity() {
                 Toast.makeText(this, "Upload failed", Toast.LENGTH_SHORT).show()
             }
     }
-// Handles image selection from gallery and PDF selection from file storage, initiating upload to Firebase Storage on selection.
+
+    // Handles image selection from gallery and PDF selection from file storage, initiating upload to Firebase Storage on selection.
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK) {
@@ -172,7 +170,10 @@ class OrganizationRegistrationActivity : AppCompatActivity() {
             }
         }
     }
-// Registers a new user with email and password, uploads associated image and PDF, and saves user details to Firestore.
+
+
+
+    // Registers a new user with email and password, uploads associated image and PDF, and saves user details to Firestore.
     private fun registerUser(email: String, password: String) {
         auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener { task ->
             if (task.isSuccessful) {
@@ -181,7 +182,7 @@ class OrganizationRegistrationActivity : AppCompatActivity() {
                 val description = etDescription.text.toString()
 
                 // Save user details to Firestore immediately
-                saveUserDetailsToFirestore(etName.text.toString(), email, imageUrl = "", pdfUrl = "", description)
+                saveUserDetailsToFirestore(email, defaultImageUrl, "", description)
 
                 // Proceed with uploading files (image and PDF) if provided
                 if (selectedImageUri != null) {
@@ -201,22 +202,21 @@ class OrganizationRegistrationActivity : AppCompatActivity() {
                         }
                     }
                 }
+
                 Toast.makeText(this, "Registration successful", Toast.LENGTH_SHORT).show()
 
                 // Transition to the Pending Approval activity
                 startActivity(Intent(this, PendingApprovalActivity::class.java))
             } else {
-                // If sign in fails, display a message to the user.
                 Toast.makeText(this, "Authentication failed: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
             }
         }
     }
 
 
-    private fun saveUserDetailsToFirestore(name: String, email: String, imageUrl: String, pdfUrl: String, description: String) {
+    private fun saveUserDetailsToFirestore(email: String, imageUrl: String, pdfUrl: String, description: String) {
         val user = hashMapOf(
             "email" to email,
-            "name" to name,
             "imageURL" to imageUrl,
             "pdfURL" to pdfUrl,
             "description" to description,
