@@ -42,10 +42,10 @@ public class HomeFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
-    db = FirebaseFirestore.getInstance();
+        db = FirebaseFirestore.getInstance();
 
-    setupRecyclerView(view);
-    setupSearchEditText(view);
+        setupRecyclerView(view);
+        setupSearchEditText(view);
 
         postList = new ArrayList<>();
         user = UserSession.getUser();
@@ -58,53 +58,53 @@ public class HomeFragment extends Fragment {
         }, userRole);
 
 
-    recyclerView.setAdapter(adapter);
+        recyclerView.setAdapter(adapter);
 
-    locationFilterSpinner = view.findViewById(R.id.locationFilterSpinner);
-    categoryFilterSpinner = view.findViewById(R.id.categoryFilterSpinner);
+        locationFilterSpinner = view.findViewById(R.id.locationFilterSpinner);
+        categoryFilterSpinner = view.findViewById(R.id.categoryFilterSpinner);
 
-    // Location filter spinner
-    ArrayAdapter<CharSequence> locAdapter = ArrayAdapter.createFromResource(
-            requireContext(),
-            R.array.filter_location_options,
-            android.R.layout.simple_spinner_item
-    );
+        // Location filter spinner
+        ArrayAdapter<CharSequence> locAdapter = ArrayAdapter.createFromResource(
+                requireContext(),
+                R.array.filter_location_options,
+                android.R.layout.simple_spinner_item
+        );
 
-    locAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-    locationFilterSpinner.setAdapter(locAdapter);
+        locAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        locationFilterSpinner.setAdapter(locAdapter);
 
-    // Category filter spinner
-    ArrayAdapter<CharSequence> catAdapter = ArrayAdapter.createFromResource(
-            requireContext(),
-            R.array.filter_category_options,
-            android.R.layout.simple_spinner_item
-    );
+        // Category filter spinner
+        ArrayAdapter<CharSequence> catAdapter = ArrayAdapter.createFromResource(
+                requireContext(),
+                R.array.filter_category_options,
+                android.R.layout.simple_spinner_item
+        );
 
-    locationFilterSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-        @Override
-        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-            // Re-filter whenever user picks a new location
-            filterPosts(searchEditText.getText().toString());
-        }
-        @Override
-        public void onNothingSelected(AdapterView<?> parent) { }
-    });
+        locationFilterSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                // Re-filter whenever user picks a new location
+                filterPosts(searchEditText.getText().toString());
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) { }
+        });
 
-    categoryFilterSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-        @Override
-        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-            // Re-filter whenever user picks a new category
-            filterPosts(searchEditText.getText().toString());
-        }
-        @Override
-        public void onNothingSelected(AdapterView<?> parent) { }
-    });
+        categoryFilterSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                // Re-filter whenever user picks a new category
+                filterPosts(searchEditText.getText().toString());
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) { }
+        });
 
 
-    catAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-    categoryFilterSpinner.setAdapter(catAdapter);
+        catAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        categoryFilterSpinner.setAdapter(catAdapter);
 
-    fetchPostsFromFirestore();
+        fetchPostsFromFirestore();
 
         return view;
     }
@@ -165,7 +165,12 @@ public class HomeFragment extends Fragment {
                         // Parse the post normally
                         Post post = document.toObject(Post.class);
                         post.setDate(ts); // Set correct Timestamp
-                        post.setCreatorEmail("OrganizationEmail");
+                        if (document.contains("organizationEmail")){
+                            post.setCreatorEmail(document.getString("organizationEmail"));
+                        }
+                        else{
+                            post.setCreatorEmail("");
+                        }
                         // If we reached here, we add the post
                         postList.add(post);
                     }

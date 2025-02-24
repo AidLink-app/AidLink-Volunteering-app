@@ -51,6 +51,7 @@ public class AddPostFragment extends Fragment {
     private Button buttonSubmit;
     private FirebaseFirestore db;
     private StorageReference storageRef;
+    private User user;
 
     private Uri selectedImageUri;
     private static final int REQUEST_IMAGE_CAPTURE = 100;
@@ -66,6 +67,8 @@ public class AddPostFragment extends Fragment {
 
         db = FirebaseFirestore.getInstance();
         storageRef = FirebaseStorage.getInstance().getReference();
+
+        user = UserSession.getUser();
 
         // Initialize UI Components
         editTextTitle = view.findViewById(R.id.editTextTitle);
@@ -231,6 +234,8 @@ public class AddPostFragment extends Fragment {
         post.put("location", location);
         post.put("category", category);
         post.put("whatsappLink", whatsappLink);
+        post.put("organizationName", user.getName());
+        post.put("organizationEmail", user.getEmail());
         post.put("imageUri", selectedImageUri != null ? selectedImageUri.toString() : "");
 
         db.collection("posts").add(post)
