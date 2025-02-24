@@ -1,5 +1,6 @@
 package com.example.welcom;
 
+import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
@@ -28,7 +29,7 @@ import java.util.Locale;
 
 public class AddPostActivity extends AppCompatActivity {
 
-    private EditText editTextTitle, editTextDescription, editTextDate, editTextLocation, editTextCategory, editTextImageUrl, editTextWhatsappLink;
+    private EditText editTextTitle, editTextDescription, editTextDate, editTextLocation, editTextCategory, editTextImageUrl, editTextWhatsappLink, editTextStartTime, editTextEndTime;
     private Spinner organizationSpinner;
     private Button buttonSubmit, btnReturn;
     private FirebaseFirestore db;
@@ -52,12 +53,17 @@ public class AddPostActivity extends AppCompatActivity {
         editTextTitle = findViewById(R.id.editTextTitle);
         editTextDescription = findViewById(R.id.editTextDescription);
         editTextDate = findViewById(R.id.editTextDate);
+        editTextStartTime = findViewById(R.id.editTextStartTime);
+        editTextEndTime = findViewById(R.id.editTextEndTime);
         editTextLocation = findViewById(R.id.editTextLocation);
         editTextCategory = findViewById(R.id.editTextCategory);
         editTextImageUrl = findViewById(R.id.editTextImageUrl);
         buttonSubmit = findViewById(R.id.buttonSubmit);
         organizationSpinner = findViewById(R.id.organizationSpinner);
         editTextWhatsappLink = findViewById(R.id.editTextWhatsappLink);
+
+        editTextStartTime.setOnClickListener(v -> showTimePickerDialog(editTextStartTime));
+        editTextEndTime.setOnClickListener(v -> showTimePickerDialog(editTextEndTime));
 
         // Show a DatePickerDialog when user clicks on editTextDate
         editTextDate.setOnClickListener(v -> {
@@ -80,6 +86,24 @@ public class AddPostActivity extends AppCompatActivity {
         loadOrganizations(); // Populate the organization spinner
 
         buttonSubmit.setOnClickListener(v -> submitPost());
+    }
+
+    private void showTimePickerDialog(EditText timeField) {
+
+        int defaultHour = 12;
+        int defaultMinute = 0;
+
+        TimePickerDialog dialog = new TimePickerDialog(
+                this,
+                (view, hourOfDay, minute) -> {
+                    String selectedTime = String.format(Locale.getDefault(), "%02d:%02d", hourOfDay, minute);
+                    timeField.setText(selectedTime);
+                },
+                defaultHour,
+                defaultMinute,
+                true // use 24-hour format
+        );
+        dialog.show();
     }
 
     /**
@@ -111,6 +135,8 @@ public class AddPostActivity extends AppCompatActivity {
         String title = editTextTitle.getText().toString().trim();
         String description = editTextDescription.getText().toString().trim();
         String dateStr = editTextDate.getText().toString().trim();
+        String startTime = editTextStartTime.getText().toString().trim();
+        String endTime = editTextEndTime.getText().toString().trim();
         String location = editTextLocation.getText().toString().trim();
         String category = editTextCategory.getText().toString().trim();
         String imageUrl = editTextImageUrl.getText().toString().trim();
@@ -124,7 +150,7 @@ public class AddPostActivity extends AppCompatActivity {
 
         // Validate all fields
         if (title.isEmpty() || description.isEmpty() || dateStr.isEmpty() || location.isEmpty()
-                || organizationId.isEmpty() || category.isEmpty() || imageUrl.isEmpty()|| whatsappLink.isEmpty()) {
+                || organizationId.isEmpty() || category.isEmpty() || imageUrl.isEmpty()|| whatsappLink.isEmpty() || startTime.isEmpty() || endTime.isEmpty()) {
             Toast.makeText(this, "Please fill in all fields before submitting!", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -150,6 +176,8 @@ public class AddPostActivity extends AppCompatActivity {
         post.put("title", title);
         post.put("description", description);
         post.put("date", dateTimestamp);
+        String hours = startTime + " - " + endTime;
+        post.put("hours", hours);
         post.put("location", location);
         post.put("organizationId", organizationId); // Reference to selected organization
         post.put("organization", organization); // Store the organization Name

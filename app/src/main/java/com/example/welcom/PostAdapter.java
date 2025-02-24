@@ -104,12 +104,13 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                 // Convert Timestamp to a date string in "dd-MM-yyyy"
                 if (post.getDate() != null) {
                     Date dateObj = post.getDate().toDate();
-                    SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
+                    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
                     String dateString = sdf.format(dateObj);
                     holder.date.setText("Date: " + dateString);
                 } else {
                     holder.date.setText("Date: N/A");
                 }
+                holder.hours.setText("Hours: " + post.getHours());
                 holder.location.setText("Location: " + post.getLocation());
                 holder.organization.setText("Organization: " + post.getOrganization());
                 holder.category.setText("Category: " + post.getCategory());
@@ -161,14 +162,14 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                                                 String notificationMessage = "You have successfully registered for " + post.getTitle();
                                                 createNotificationForUser(currentUserEmail, notificationTitle, notificationMessage);
 
-//                                                // Navigate to RegistrationConfirmationActivity
-//                                                Intent intent = new Intent(context, RegistrationConfirmationActivity.class);
-//
-//                                                // Pass the WhatsApp link of the post to the next Activity
-//                                                intent.putExtra("whatsappLink", post.getWhatsapp_link()); // Ensure Post has a getWhatsappLink() method
-//
-//                                                // Start the RegistrationConfirmationActivity
-//                                                context.startActivity(intent);
+                                                // Navigate to RegistrationConfirmationActivity
+                                                Intent intent = new Intent(context, RegistrationConfirmationActivity.class);
+
+                                                // Pass the WhatsApp link of the post to the next Activity
+                                                intent.putExtra("whatsappLink", post.getWhatsapp_link()); // Ensure Post has a getWhatsappLink() method
+
+                                                // Start the RegistrationConfirmationActivity
+                                                context.startActivity(intent);
                                             })
                                             .addOnFailureListener(e -> {
                                                 Toast.makeText(context, "Failed to register: " + e.getMessage(), Toast.LENGTH_SHORT).show();
@@ -369,7 +370,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
     }
 
     public static class PostViewHolder extends RecyclerView.ViewHolder {
-        TextView title, description, date, location, organization, category, imageUrl;
+        TextView title, description, date, location, organization, category, imageUrl, hours;
         Button btnDeletePost, btnEditPost, btnViewDetails, btnRegister; // Added btnRegister
         View detailsLayout;
         Button btnViewRegistrations;
@@ -402,6 +403,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             // Details Section
             detailsLayout = itemView.findViewById(R.id.detailsLayout);
             date = itemView.findViewById(R.id.postDate);
+            hours = itemView.findViewById(R.id.postHours);
             location = itemView.findViewById(R.id.postLocation);
             organization = itemView.findViewById(R.id.postOrganization);
             category = itemView.findViewById(R.id.postCategory);

@@ -44,6 +44,24 @@
             android:hint="Date (DD-MM-YYYY)"
             android:inputType="date" />
 
+        <EditText
+            android:id="@+id/editTextStartTime"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Start Time"
+            android:focusable="false"
+            android:clickable="true"/>
+
+        <EditText
+            android:id="@+id/editTextEndTime"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="End Time"
+            android:focusable="false"
+            android:clickable="true"/>
+
+
+
         <!-- Location -->
         <EditText
             android:id="@+id/editTextLocation"
