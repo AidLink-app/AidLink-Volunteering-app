@@ -13,7 +13,7 @@ public class Post implements Serializable {
     private String description;
     private Timestamp date;
     private String location;
-    private String organizationId;
+    private String name;
     private String category;
     private String imageUrl;
     private String whatsapp_link;
@@ -31,12 +31,13 @@ public class Post implements Serializable {
 
     // Constructor with all fields
     public Post(String title, String description, Timestamp date, String location,
-                String organization, String category, String imageUrl, String whatsapp_link) {
+                String organization, String email, String category, String imageUrl, String whatsapp_link) {
         this.title = title;
         this.description = description;
         this.date = date;
         this.location = location;
-        this.organizationId = organization;
+        this.name = organization;
+        this.creatorEmail = email;
         this.category = category;
         this.imageUrl = imageUrl;
         this.whatsapp_link = whatsapp_link;
@@ -68,7 +69,7 @@ public class Post implements Serializable {
     }
 
     public String getOrganization() {
-        return organizationId;
+        return name;
     }
 
     public String getCategory() {
@@ -122,7 +123,7 @@ public class Post implements Serializable {
     }
 
     public void setOrganization(String organization) {
-        this.organizationId = organization;
+        this.name = organization;
     }
 
     public void setCategory(String category) {

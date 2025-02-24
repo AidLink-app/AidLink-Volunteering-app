@@ -18,12 +18,14 @@ public class PostActivity extends AppCompatActivity {
     private EditText titleField, descriptionField, dateField, locationField, categoryField, imageUrlField;
     private Button saveButton;
     private Post post; // This will be used if editing an existing post
+    private User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post);
 
+        user = UserSession.getUser();
         titleField = findViewById(R.id.titleField);
         descriptionField = findViewById(R.id.descriptionField);
         dateField = findViewById(R.id.dateField);

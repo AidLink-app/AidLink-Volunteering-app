@@ -82,7 +82,8 @@ public class AddPostFragment extends Fragment {
         post.put("description", description);
         post.put("date", dateTimestamp);
         post.put("location", location);
-        post.put("organization", user.getEmail()); // Store the organization Name
+        post.put("organizationName", user.getName()); // Store the organization Name
+        post.put("organizationEmail", user.getEmail());
         post.put("category", category);
         post.put("imageUrl", imageUrl);
 

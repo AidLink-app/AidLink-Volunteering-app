@@ -29,8 +29,8 @@ public class HomeFragment extends Fragment {
     private List<Post> postList;
     private EditText searchEditText;
     private List<Post> filteredList = new ArrayList<>(); // List for search filtering
-    private Map<String, String> organizationMap = new HashMap<>(); // Cache for organization names
     private FirebaseFirestore db;
+    private User user;
     private String userRole;
     @Nullable
     @Override
@@ -43,7 +43,7 @@ public class HomeFragment extends Fragment {
         setupSearchEditText(view);
 
         postList = new ArrayList<>();
-        User user = UserSession.getUser();
+        user = UserSession.getUser();
         userRole = user.getRole();
         adapter = new PostAdapter(filteredList, post -> {
             // Remove the post from both postList and filteredList
@@ -54,7 +54,6 @@ public class HomeFragment extends Fragment {
 
         recyclerView.setAdapter(adapter);
 
-        fetchOrganizations();
         fetchPostsFromFirestore();
 
         return view;
@@ -77,25 +76,6 @@ public class HomeFragment extends Fragment {
             @Override
             public void afterTextChanged(Editable s) {}
         });
-    }
-
-    /**
-      * Fetch organizations and store them in a map
-      */
-    private void fetchOrganizations() {
-        db.collection("organizations")
-                .get()
-                .addOnSuccessListener(querySnapshot -> {
-                    for (QueryDocumentSnapshot document : querySnapshot) {
-                        String orgId = document.getId();
-                        String orgName = document.getString("name");
-                        organizationMap.put(orgId, orgName); // Store in cache
-                    }
-                    fetchPostsFromFirestore(); // Ensure posts are fetched after organizations
-                })
-                .addOnFailureListener(e -> {
-                    Log.e("Firestore", "Error fetching organizations", e);
-                });
     }
 
     private void fetchPostsFromFirestore() {
@@ -135,15 +115,7 @@ public class HomeFragment extends Fragment {
                         // Parse the post normally
                         Post post = document.toObject(Post.class);
                         post.setDate(ts); // Set correct Timestamp
-
-                        // Match organization ID to name
-                        String organizationId = document.getString("organizationId");
-                        if (organizationId != null && organizationMap.containsKey(organizationId)) {
-                            post.setOrganization(organizationMap.get(organizationId));
-                        } else {
-                            post.setOrganization("Unknown Organization");
-                        }
-
+                        post.setCreatorEmail("OrganizationEmail");
                         // If we reached here, we add the post
                         postList.add(post);
                     }
