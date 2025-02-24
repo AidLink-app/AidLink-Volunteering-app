@@ -28,6 +28,8 @@
         <activity
             android:name=".EditPostActivity"
             android:exported="false" />
+        <activity android:name=".ForgotPasswordActivity" android:exported="true" />
+
         <activity android:name=".PendingApprovalActivity">
         </activity>
         <activity android:name=".AdminDashboardActivity">

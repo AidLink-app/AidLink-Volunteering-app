@@ -57,11 +57,11 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-//        TextView forgotPasswordText = findViewById(R.id.forgotPassword);
-//        forgotPasswordText.setOnClickListener(v -> {
-//            Intent intent = new Intent(MainActivity.this, ForgotPasswordActivity.class);
-//            startActivity(intent);
-//        });
+        TextView forgotPasswordText = findViewById(R.id.forgotPassword);
+        forgotPasswordText.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, ForgotPasswordActivity.class);
+            startActivity(intent);
+        });
 
     }
     private void loginUser() {
