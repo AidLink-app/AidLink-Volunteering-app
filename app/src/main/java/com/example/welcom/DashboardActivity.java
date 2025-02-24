@@ -2,6 +2,8 @@ package com.example.welcom;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 
 import androidx.annotation.Nullable;
@@ -25,9 +27,14 @@ public class DashboardActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
 
-        bottomNavigationView = findViewById(R.id.bottom_navigation);
         User user = UserSession.getUser();
         userRole = user.getRole();
+
+        bottomNavigationView = findViewById(R.id.bottom_navigation);
+        Menu menu = bottomNavigationView.getMenu();
+        MenuItem addPostItem = menu.findItem(R.id.nav_addpost);
+        addPostItem.setVisible(!userRole.equals("volunteer"));
+
         replaceFragment(new HomeFragment()); // Navigate to home auto
         bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
             if(item.getItemId() == R.id.nav_home) {
