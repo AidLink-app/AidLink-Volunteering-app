@@ -158,6 +158,15 @@
             android:layout_height="wrap_content"
             android:text="Image URL: "
             android:textSize="14sp" />
+
+        <ImageView
+            android:id="@+id/postImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:scaleType="centerCrop"
+            android:visibility="gone" />
+
     </LinearLayout>
 
     <Button

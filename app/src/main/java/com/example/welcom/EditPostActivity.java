@@ -46,8 +46,8 @@ public class EditPostActivity extends AppCompatActivity {
         editTextDescription = findViewById(R.id.editTextDescription);
         editTextDate = findViewById(R.id.editTextDate);
         editTextLocation = findViewById(R.id.editTextLocation);
-        editTextCategory = findViewById(R.id.editTextCategory);
-        editTextImageUrl = findViewById(R.id.editTextImageUrl);
+//        editTextCategory = findViewById(R.id.editTextCategory);
+//        editTextImageUrl = findViewById(R.id.editTextImageUrl);
         organizationSpinner = findViewById(R.id.organizationSpinner); // Spinner for Organization
         buttonUpdate = findViewById(R.id.buttonSubmit); // Reusing the Submit button as Update
 

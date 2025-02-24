@@ -10,16 +10,15 @@ public class Post {
     private String title;
     private String description;
     private Timestamp date;
-    private String location;
+    private String location;       // location string
+
+    private String locationArea;
     private String organizationId;
-    private String category;
+    private String category;       // category string
     private String imageUrl;
     private String whatsapp_link;
-
     private boolean activeStatus = true;
-
     private String creatorEmail;
-
     private List<String> registeredUsers = new ArrayList<>();
 
 
@@ -28,7 +27,7 @@ public class Post {
     }
 
     // Constructor with all fields
-    public Post(String title, String description, Timestamp date, String location,
+    public Post(String title, String description, Timestamp date, String location, String locationArea,
                 String organization, String category, String imageUrl, String whatsapp_link) {
         this.title = title;
         this.description = description;
@@ -37,6 +36,7 @@ public class Post {
         this.organizationId = organization;
         this.category = category;
         this.imageUrl = imageUrl;
+        this.locationArea = locationArea;
         this.whatsapp_link = whatsapp_link;
         this.activeStatus = true;
     }
@@ -55,6 +55,10 @@ public class Post {
 
     public String getDescription() {
         return description;
+    }
+
+    public String getLocationArea() {
+        return locationArea;
     }
 
     public Timestamp getDate() {
@@ -98,6 +102,10 @@ public class Post {
 
     public void setCreatorEmail(String creatorEmail) {
         this.creatorEmail = creatorEmail;
+    }
+
+    public void setLocationArea(String locationArea) {
+        this.locationArea = locationArea;
     }
 
     public void setActiveStatus(boolean status){

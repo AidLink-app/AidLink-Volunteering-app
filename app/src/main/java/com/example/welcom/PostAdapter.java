@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
@@ -24,12 +25,17 @@ import javax.net.ssl.HttpsURLConnection;
 import java.net.PasswordAuthentication;
 import java.util.Properties;
 
-
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -84,6 +90,17 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         holder.title.setText(post.getTitle());
         holder.description.setText(post.getDescription());
 
+        String imageUrl = post.getImageUrl();
+        if (imageUrl != null && !imageUrl.isEmpty()) {
+            holder.postImage.setVisibility(View.VISIBLE);
+            Glide.with(context)
+                    .load(imageUrl)
+                    .into(holder.postImage);
+        } else {
+            holder.postImage.setVisibility(View.GONE);
+        }
+
+
         // Get current user's email
         String currentUserEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail();
 
@@ -103,11 +120,20 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             if (holder.detailsLayout.getVisibility() == View.GONE) {
                 holder.detailsLayout.setVisibility(View.VISIBLE);
                 holder.btnViewDetails.setText("Hide Details");
-                holder.date.setText("Date: " + post.getDate());
+                // Convert Timestamp to a date string in "dd-MM-yyyy"
+                if (post.getDate() != null) {
+                    Date dateObj = post.getDate().toDate();
+                    SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
+                    String dateString = sdf.format(dateObj);
+                    holder.date.setText("Date: " + dateString);
+                    holder.date.setText("Date: " + post.getDate());
+                } else {
+                    holder.date.setText("Date: N/A");
+                }
                 holder.location.setText("Location: " + post.getLocation());
                 holder.organization.setText("Organization: " + post.getOrganization());
                 holder.category.setText("Category: " + post.getCategory());
-                holder.imageUrl.setText("Image URL: " + post.getImageUrl());
+//                holder.imageUrl.setText("Image URL: " + post.getImageUrl());
             } else {
                 holder.detailsLayout.setVisibility(View.GONE);
                 holder.btnViewDetails.setText("Details");
@@ -390,6 +416,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         Button btnDeletePost, btnEditPost, btnViewDetails, btnRegister; // Added btnRegister
         View detailsLayout;
         Button btnViewRegistrations;
+        ImageView postImage;
+
 
         public PostViewHolder(@NonNull View itemView, String userRole) {
             super(itemView);
@@ -401,6 +429,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             btnRegister = itemView.findViewById(R.id.btnRegister); // Initialize btnRegister
 
             btnViewRegistrations = itemView.findViewById(R.id.btnViewRegistrations);
+            postImage = itemView.findViewById(R.id.postImage);
 
             if ("organization".equals(userRole)) {
                 btnViewRegistrations.setVisibility(View.VISIBLE);

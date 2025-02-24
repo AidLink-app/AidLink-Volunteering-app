@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.Objects;
 import com.google.firebase.auth.FirebaseAuth;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.messaging.FirebaseMessaging;
@@ -32,7 +33,17 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        if (UserSession.getUser() == null) {
+            UserSession.init(this); // This is where initialization happens.
+        }
 
+        User user = UserSession.getUser();
+        if (user != null) {
+            // User is logged in, redirect to DashboardActivity
+            Intent intent = new Intent(this, DashboardActivity.class);
+            startActivity(intent);
+            finish();
+        }
         auth = FirebaseAuth.getInstance();
         emailField = findViewById(R.id.email);
         passwordField = findViewById(R.id.password);
@@ -45,53 +56,52 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(this, RegistrationTypeActivity.class);
             startActivity(intent);
         });
+
+//        TextView forgotPasswordText = findViewById(R.id.forgotPassword);
+//        forgotPasswordText.setOnClickListener(v -> {
+//            Intent intent = new Intent(MainActivity.this, ForgotPasswordActivity.class);
+//            startActivity(intent);
+//        });
+
     }
     private void loginUser() {
         String email = emailField.getText().toString().trim();
         String password = passwordField.getText().toString().trim();
+        // Create the User object
 
         if (!email.isEmpty() && !password.isEmpty()) {
             auth.signInWithEmailAndPassword(email, password)
                     .addOnCompleteListener(this, task -> {
                         if (task.isSuccessful()) {
-                            // Fetch the user's document from Firestore
-                            FirebaseFirestore db = FirebaseFirestore.getInstance();
-                            db.collection("users").document(email)
-                                    .get()
-                                    .addOnSuccessListener(documentSnapshot -> {
-                                        if (documentSnapshot.exists()) {
-                                            String role = documentSnapshot.getString("role");
-                                            if ("organization".equals(role)) {
-                                                // For organizations, check the "approved" flag
-                                                Boolean approved = documentSnapshot.getBoolean("approved");
-                                                if (approved != null && approved) {
-                                                    // Organization approved: launch DashboardActivity
-                                                    Intent intent = new Intent(MainActivity.this, DashboardActivity.class);
-                                                    User user = new User(email, role, "", "", "", "", "");
-                                                    intent.putExtra("user", user);
-                                                    startActivity(intent);
-                                                    finish();
-                                                } else {
-                                                    // Organization not approved: launch PendingApprovalActivity
-                                                    Intent intent = new Intent(MainActivity.this, PendingApprovalActivity.class);
-                                                    startActivity(intent);
-                                                    finish();
-                                                }
-                                            } else {
-                                                // For volunteer users: launch DashboardActivity directly
-                                                Intent intent = new Intent(MainActivity.this, DashboardActivity.class);
-                                                User user = new User(email, role, "", "", "", "", "");
-                                                intent.putExtra("user", user);
-                                                startActivity(intent);
-                                                finish();
-                                            }
-                                        } else {
-                                            Toast.makeText(MainActivity.this, "User record not found", Toast.LENGTH_SHORT).show();
+                            getUserRole(email, new RoleCallback() {
+                                @Override
+                                public void onRoleFetched(String role) {
+                                    // Handle the retrieved role
+                                    Intent intent = new Intent(MainActivity.this, DashboardActivity.class);
+                                    User user = new User(
+                                            email, role, "", "", "", "", ""
+                                    );
+                                    // get token for notifications
+                                    FirebaseMessaging.getInstance().getToken().addOnCompleteListener(task -> {
+                                        if(task.isSuccessful()){
+                                            String token = task.getResult();
+                                            Log.i("My token:" ,token);
+                                            FirebaseFirestore.getInstance().collection("users").document(FirebaseAuth.getInstance().getUid()).update("fcmToken",token);
+                                            user.setFcmToken(token);
+
                                         }
-                                    })
-                                    .addOnFailureListener(e -> {
-                                        Toast.makeText(MainActivity.this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                                     });
+                                    UserSession.setUser(user);
+                                    startActivity(intent);
+                                    finish();
+                                }
+                                @Override
+                                public void onError(String error) {
+                                    // Handle any error that occurred
+                                    System.err.println("Error fetching role: " + error);
+                                    Toast.makeText(MainActivity.this, "Error: " + error, Toast.LENGTH_SHORT).show();
+                                }
+                            });
                         } else {
                             Toast.makeText(MainActivity.this, "Login failed: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
                         }
@@ -101,12 +111,10 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
     public interface RoleCallback {
         void onRoleFetched(String role);  // Called when the role is successfully fetched
         void onError(String error);      // Called when there's an error
     }
-
 
     public void getUserRole(String userEmail, RoleCallback callback) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -126,4 +134,3 @@ public class MainActivity extends AppCompatActivity {
                 });
     }
 }
-

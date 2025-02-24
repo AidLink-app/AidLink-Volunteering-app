@@ -1,0 +1,71 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <!-- Header TextView for Posts Feed -->
+    <TextView
+        android:id="@+id/headerPostsFeed"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Posts Feed"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:padding="8dp"
+        android:background="@color/blue"
+        android:textColor="@android:color/white" />
+
+
+    <!-- Search Bar for Filtering Posts -->
+    <EditText
+        android:id="@+id/searchEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Search posts..."
+        android:padding="8dp"
+        android:layout_margin="8dp"
+        android:background="@android:drawable/edit_text"
+        android:inputType="text"
+        android:drawableStart="@android:drawable/ic_menu_search" />
+
+    <Spinner
+        android:id="@+id/locationFilterSpinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp" />
+
+    <!-- Spinner for category -->
+    <Spinner
+        android:id="@+id/categoryFilterSpinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp" />
+
+
+    <!-- RecyclerView for Posts -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="558dp"
+        android:layout_weight="1"
+        android:padding="8dp" />
+
+    <Button
+        android:id="@+id/btnGoToAdminDashboard"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Go to Admin Dashboard"
+        android:layout_marginTop="20dp"
+        android:layout_gravity="center" />
+
+
+
+    <!-- Horizontal Layout for Buttons -->
+
+
+</LinearLayout>
+
+

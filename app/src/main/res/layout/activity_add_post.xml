@@ -52,6 +52,12 @@
             android:hint="Location"
             android:inputType="text" />
 
+        <Spinner
+            android:id="@+id/locationSpinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            />
+
         <!-- Organization Dropdown (Spinner) -->
         <TextView
             android:layout_width="match_parent"
@@ -68,22 +74,29 @@
             android:layout_marginBottom="8dp"/>
 
         <!-- Category -->
-        <EditText
-            android:id="@+id/editTextCategory"
+<!--        <EditText-->
+<!--            android:id="@+id/editTextCategory"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:hint="Category"-->
+<!--            android:inputType="text" />-->
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Category"
-            android:inputType="text" />
+            android:text="Select Category"
+            android:textStyle="bold"
+            android:paddingTop="8dp"
+            android:paddingBottom="4dp"/>
 
-        <!-- Image URL -->
-        <EditText
-            android:id="@+id/editTextImageUrl"
+        <Spinner
+            android:id="@+id/categorySpinner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Image URL"
-            android:inputType="textUri" />
+            android:layout_marginBottom="8dp"/>
 
-        <!-- WhatsApp Link -->
+
+        <!-- New ImageButton in place of the above EditText -->
+
         <EditText
             android:id="@+id/editTextWhatsappLink"
             android:layout_width="match_parent"
@@ -92,8 +105,21 @@
             android:inputType="textUri"
             android:layout_marginTop="8dp" />
 
+        <!-- WhatsApp Link -->
 
         <!-- Submit Button -->
+
+        <ImageButton
+            android:id="@+id/buttonImagePicker"
+            android:layout_width="52dp"
+            android:layout_height="62dp"
+            android:layout_marginTop="10dp"
+            android:adjustViewBounds="true"
+            android:background="@null"
+            android:contentDescription="@string/app_name"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_camera" />
+
         <Button
             android:id="@+id/buttonSubmit"
             android:layout_width="match_parent"
@@ -105,3 +131,5 @@
             android:textStyle="bold" />
     </LinearLayout>
 </ScrollView>
+
+

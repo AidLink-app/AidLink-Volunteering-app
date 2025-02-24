@@ -66,6 +66,8 @@ dependencies {
     implementation ("com.google.firebase:firebase-messaging:23.1.2")
     implementation ("com.google.firebase:firebase-firestore:24.5.0")
     implementation ("com.onesignal:OneSignal:[5.0.0, 5.1.99]")
+    implementation ("com.github.bumptech.glide:glide:4.15.1")
+    annotationProcessor ("com.github.bumptech.glide:compiler:4.15.1")
 
     // Espresso Core
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
