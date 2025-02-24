@@ -67,6 +67,7 @@
                 android:id="@+id/email"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:minHeight="48dp"
                 android:layout_marginTop="4dp"
                 android:hint="Enter your email"
                 android:inputType="textEmailAddress"
@@ -86,6 +87,7 @@
                 android:id="@+id/password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:minHeight="48dp"
                 android:layout_marginTop="4dp"
                 android:hint="Enter your password"
                 android:inputType="textPassword"
@@ -93,6 +95,7 @@
 
             <!-- Remember Me -->
             <CheckBox
+                android:id="@+id/rememberMeCheckBox"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
@@ -107,12 +110,21 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
                 android:layout_marginTop="4dp"
+                android:minHeight="48dp"
+                android:padding="12dp"
                 android:text="I forgot my password"
                 android:textColor="@color/blue"
                 android:textSize="16sp"
                 android:clickable="true"
                 android:focusable="true"
                 android:contentDescription="Forgot your password? Click here." />
+
+            <!-- Google Sign-In Button -->
+            <com.google.android.gms.common.SignInButton
+                android:id="@+id/google_sign_in_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"/>
 
             <!-- Login Button -->
             <com.google.android.material.button.MaterialButton

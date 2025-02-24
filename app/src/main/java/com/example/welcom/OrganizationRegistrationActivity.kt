@@ -14,8 +14,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
 
 class OrganizationRegistrationActivity : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth  // Declare FirebaseAuth instance
@@ -23,9 +23,11 @@ class OrganizationRegistrationActivity : AppCompatActivity() {
     private lateinit var btnChooseImage: Button
     private lateinit var btnUploadPDF: Button
     private lateinit var etDescription: EditText
+    private lateinit var etName: EditText
     private lateinit var btnSubmit: Button
     private var selectedImageUri: Uri? = null
     private var selectedPDFUri: Uri? = null
+    private var user: User = UserSession.getUser()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,6 +40,7 @@ class OrganizationRegistrationActivity : AppCompatActivity() {
         btnChooseImage = findViewById(R.id.btnChooseImage)
         btnUploadPDF = findViewById(R.id.btnUploadPDF)
         etDescription = findViewById(R.id.etDescription)
+        etName  = findViewById(R.id.Name)
         btnSubmit = findViewById(R.id.btnSubmit)
 
         setupButtonClickListeners()
@@ -60,8 +63,8 @@ class OrganizationRegistrationActivity : AppCompatActivity() {
         btnSubmit.setOnClickListener {
             val email = findViewById<EditText>(R.id.etEmail).text.toString().trim()
             val password = findViewById<EditText>(R.id.etPassword).text.toString().trim()
-            val description = etDescription.text.toString().trim()
-
+            val description = findViewById<EditText>(R.id.etDescription).text.toString().trim()
+            registerUser(email, password)
             if (email.isNotEmpty() && password.isNotEmpty() && selectedPDFUri != null && description.isNotEmpty()) {
                 registerUser(email, password)
             } else {
@@ -108,7 +111,7 @@ class OrganizationRegistrationActivity : AppCompatActivity() {
                     uploadFileToFirebaseStorage(it, "images/${it.lastPathSegment}") { imageUrl ->
                         selectedPDFUri?.let { pdfUri ->
                             uploadFileToFirebaseStorage(pdfUri, "pdfs/${pdfUri.lastPathSegment}") { pdfUrl ->
-                                saveUserDetailsToFirestore(email, imageUrl, pdfUrl, etDescription.text.toString())
+                                saveUserDetailsToFirestore(etName.text.toString(), email, imageUrl, pdfUrl, etDescription.text.toString())
                             }
                         }
                     }
@@ -118,6 +121,10 @@ class OrganizationRegistrationActivity : AppCompatActivity() {
                 // If sign in fails, display a message to the user.
                 Toast.makeText(this, "Authentication failed: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
             }
+            // Go back to login screen
+            val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
+            finish()
         }
     }
 
@@ -132,9 +139,10 @@ class OrganizationRegistrationActivity : AppCompatActivity() {
         }
     }
 
-    private fun saveUserDetailsToFirestore(email: String, imageUrl: String, pdfUrl: String, description: String) {
+    private fun saveUserDetailsToFirestore(name: String, email: String, imageUrl: String, pdfUrl: String, description: String) {
         val user = hashMapOf(
             "email" to email,
+            "name" to name,
             "imageURL" to imageUrl,
             "pdfURL" to pdfUrl,
             "description" to description,

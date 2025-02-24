@@ -5,56 +5,12 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <!-- Header TextView for Posts Feed -->
-    <TextView
-        android:id="@+id/headerPostsFeed"
+    <!-- FrameLayout for Fragment Container -->
+    <FrameLayout
+        android:id="@+id/fragment_container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Posts Feed"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:gravity="center"
-        android:padding="8dp"
-        android:background="@color/blue"
-        android:textColor="@android:color/white" />
-
-
-    <!-- Search Bar for Filtering Posts -->
-    <EditText
-        android:id="@+id/searchEditText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Search posts..."
-        android:padding="8dp"
-        android:layout_margin="8dp"
-        android:background="@android:drawable/edit_text"
-        android:inputType="text"
-        android:drawableStart="@android:drawable/ic_menu_search" />
-
-    <!-- RecyclerView for Posts -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="558dp"
-        android:layout_weight="1"
-        android:padding="8dp" />
-
-    <!-- Sign Out Button -->
-    <Button
-        android:id="@+id/btnSignOut"
-        android:layout_width="wrap_content"
-        android:layout_height="48dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
-        android:backgroundTint="@android:color/holo_red_dark"
-        android:paddingHorizontal="16dp"
-        android:paddingVertical="12dp"
-        android:text="Sign Out"
-        android:gravity="center"
-        android:textColor="@android:color/white"
-        android:textStyle="bold" />
-
-    <!-- Horizontal Layout for Buttons -->
+        android:layout_height="0dp"
+        android:layout_weight="1" />
 
     <!-- Bottom Navigation View -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
@@ -62,7 +18,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:menu="@menu/nav_menu" />
-
 </LinearLayout>
+
 
 

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+<!--    &lt;!&ndash; Header TextView for Posts Feed &ndash;&gt;-->
+<!--    <TextView-->
+<!--        android:id="@+id/headerPostsFeed"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:text="Posts Feed"-->
+<!--        android:textSize="20sp"-->
+<!--        android:textStyle="bold"-->
+<!--        android:gravity="center"-->
+<!--        android:padding="8dp"-->
+<!--        android:background="@color/blue"-->
+<!--        android:textColor="@android:color/white" />-->
+
+    <!-- Search Bar for Filtering Posts -->
+    <EditText
+        android:id="@+id/searchEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Search posts..."
+        android:padding="8dp"
+        android:layout_margin="8dp"
+        android:background="@android:drawable/edit_text"
+        android:inputType="text"
+        android:drawableStart="@android:drawable/ic_menu_search" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+</LinearLayout>
