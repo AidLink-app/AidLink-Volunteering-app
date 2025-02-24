@@ -129,6 +129,16 @@
             android:textColor="@android:color/black" />
 
         <TextView
+            android:id="@+id/postHours"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Hours:"
+            android:textSize="14sp"
+            android:layout_marginTop="4dp"/>
+
+
+
+        <TextView
             android:id="@+id/postLocation"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
