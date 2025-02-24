@@ -1,5 +1,6 @@
 package com.example.welcom;
 import com.google.firebase.Timestamp;
+import android.app.TimePickerDialog;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -10,6 +11,7 @@ public class Post {
     private String title;
     private String description;
     private Timestamp date;
+    private String hours;
     private String location;
     private String organizationId;
     private String category;
@@ -45,7 +47,7 @@ public class Post {
     public String getPostId() {
         return postId;
     }
-
+    public String getHours() { return hours; }
     public String getCreatorEmail() {
         return creatorEmail;
     }
@@ -99,6 +101,7 @@ public class Post {
     public void setCreatorEmail(String creatorEmail) {
         this.creatorEmail = creatorEmail;
     }
+    public void setHours(String hours) { this.hours = hours; }
 
     public void setActiveStatus(boolean status){
         this.activeStatus = status;
