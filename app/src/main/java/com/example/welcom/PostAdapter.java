@@ -123,7 +123,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             holder.btnEditPost.setVisibility(View.VISIBLE);
             holder.btnDeletePost.setVisibility(View.VISIBLE);
             holder.btnViewRegistrations.setVisibility(View.VISIBLE);
-            holder.btnRegister.setVisibility(View.GONE);
+            holder.btnRegister.setVisibility(View.VISIBLE);
         }
         else{
             // Display buttons based on whether the current user is the creator of the post

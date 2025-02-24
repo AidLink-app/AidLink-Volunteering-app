@@ -56,6 +56,7 @@ public class DashboardActivity extends AppCompatActivity {
             return true;
         });
     }
+
     private void replaceFragment(Fragment fragment) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
