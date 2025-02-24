@@ -1,37 +1,55 @@
 <!-- Layout file: fragment_profile.xml -->
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp">
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:gravity="center"
+    android:background="@android:color/white">
 
-    <TextView
-        android:id="@+id/tvProfileInfo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="User Profile Information"
-        android:layout_centerInParent="true" />
+    <!-- Profile Image Placeholder -->
+    <ImageView
+        android:id="@+id/profileImage"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:src="@drawable/ic_profile"
+        android:scaleType="centerCrop"
+        android:layout_marginBottom="16dp"
+        android:background="@android:color/darker_gray"
+        android:padding="8dp"
+        android:layout_gravity="center"
+        android:clipToOutline="true"/>
+
+    <!-- User Name -->
     <TextView
         android:id="@+id/tvUserName"
-        android:layout_below="@+id/tvProfileInfo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="User Name"
-        android:layout_marginTop="10dp"/>
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textColor="@android:color/black"
+        android:layout_marginBottom="8dp"/>
 
+    <!-- User Email -->
     <TextView
         android:id="@+id/tvUserEmail"
-        android:layout_below="@+id/tvUserName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="User Email"
-        android:layout_marginTop="10dp"/>
+        android:text="user@example.com"
+        android:textSize="16sp"
+        android:textColor="@android:color/black"
+        android:layout_marginBottom="8dp"/>
 
+    <!-- User Role (User/Organization) -->
     <TextView
         android:id="@+id/tvUserRole"
-        android:layout_below="@+id/tvUserEmail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="User Role"
-        android:layout_marginTop="10dp"/>
+        android:text="Type: User"
+        android:textSize="16sp"
+        android:textColor="@android:color/black"
+        android:layout_marginBottom="8dp"/>
 
-</RelativeLayout>
+</LinearLayout>
