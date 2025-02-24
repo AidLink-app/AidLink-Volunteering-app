@@ -24,6 +24,9 @@
             android:exported="false" />
         <activity android:name=".ForgotPasswordActivity" android:exported="true" />
         <activity
+            android:name=".RegistrationConfirmationActivity"
+            android:exported="false" />
+        <activity
             android:name=".VolunteerRegistrationActivity"
             android:exported="true" />
         <activity
