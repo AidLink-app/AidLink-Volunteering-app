@@ -1,0 +1,94 @@
+Code Review Summary
+1. Key Changes and Improvements
+1.1 Optimize Firestore Query Handling with Caching
+Problem: Firestore queries are executed every time, even if the data hasn't changed. This can cause unnecessary network calls, reducing performance.
+Solution: Implement caching using SharedPreferences to store the username locally and update it only when needed.
+1.2 Improve Code Readability and Maintainability
+Problem: The function is large, lacks proper structure, and repeats logic. It should be split into smaller helper functions for clarity and reusability.
+Solution: Extract Firestore query handling into a separate method and improve variable naming for readability.
+1.3 Improve Navigation Handling
+Problem: The current navigation logic is handled inside multiple locations, causing redundancy and inconsistency.
+Solution: Move navigation logic to a separate helper method, reducing repeated getSupportFragmentManager().beginTransaction() calls.
+2. Original Code with Documentation for Improvement
+
+public void setUsernameInNavBar(FirebaseFirestore db, FirebaseUser currentUser, TextView uname) {
+    if (currentUser != null) {
+        String userId = currentUser.getUid(); // Get the authenticated user's UID
+        Log.d("DEBUG", "User ID: " + userId);
+
+        // PROBLEM 1: Firestore queries should be optimized and handled properly
+        // Firestore calls should be cached to avoid unnecessary network requests.
+        db.collection("users").document(userId)
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        String username = documentSnapshot.getString("username");
+                        boolean isTrainer = Boolean.TRUE.equals(documentSnapshot.getBoolean("isTrainer"));
+
+                        // PROBLEM 2: The logic below should be extracted into a helper function 
+                        // Instead of inline if-else, a function should determine user role and update UI.
+                        if (isTrainer) {
+                            uname.setText(username + " (Trainer)");
+                        } else {
+                            uname.setText(username + " (Training)");
+                        }
+                    } else {
+                        Log.d("DEBUG", "Document does not exist for UID: " + userId);
+                        uname.setText("not logged in");
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    // PROBLEM 3: Error handling is not structured properly
+                    // Logging is useful, but UI should provide better feedback to users
+                    Log.e("ERROR", "Failed to fetch user data", e);
+                    uname.setText("Error fetching data");
+                });
+    }
+}
+3. Improved Code (Refactored Firestore Query Handling with Caching)
+This update implements caching to avoid redundant Firestore calls.
+
+private static final String PREFS_NAME = "UserCache";
+private static final String KEY_USERNAME = "cachedUsername";
+
+private void fetchAndSetUsername(FirebaseFirestore db, FirebaseUser currentUser, TextView uname, Context context) {
+    if (currentUser == null) {
+        uname.setText("not logged in");
+        return;
+    }
+
+    SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+    String cachedUsername = prefs.getString(KEY_USERNAME, null);
+
+    if (cachedUsername != null) {
+        uname.setText(cachedUsername); // Load cached data immediately
+    }
+
+    String userId = currentUser.getUid();
+    Log.d("DEBUG", "Fetching username for User ID: " + userId);
+
+    db.collection("users").document(userId)
+            .get()
+            .addOnSuccessListener(documentSnapshot -> {
+                if (documentSnapshot.exists()) {
+                    String username = documentSnapshot.getString("username");
+                    boolean isTrainer = Boolean.TRUE.equals(documentSnapshot.getBoolean("isTrainer"));
+                    String displayName = isTrainer ? username + " (Trainer)" : username + " (Training)";
+                    uname.setText(displayName);
+
+                    // Cache the username to avoid redundant Firestore queries
+                    prefs.edit().putString(KEY_USERNAME, displayName).apply();
+                } else {
+                    Log.d("DEBUG", "Document does not exist for UID: " + userId);
+                    uname.setText("not logged in");
+                }
+            })
+            .addOnFailureListener(e -> {
+                Log.e("ERROR", "Failed to fetch user data", e);
+                uname.setText("Error fetching data");
+            });
+}
+Key Changes in Improved Code:
+1. Implemented caching using SharedPreferences to store the username and reduce Firestore queries.
+2. Improved structure by creating fetchAndSetUsername() to handle both UI updates and caching.
+3. Better error handling ensures the UI remains functional even if Firestore fails.

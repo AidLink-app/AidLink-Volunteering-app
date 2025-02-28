@@ -1,0 +1,2 @@
+DashboardActivityTest - Checks the visibility of "Add Post" button for organization user and not visible for volunteer user
+VolunteerRegistrationActivtiyTest - Checks 2 scenarios of registration - if success so check save in firebase and the opposite if failed
